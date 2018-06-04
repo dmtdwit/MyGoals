@@ -1,46 +1,10 @@
 
-/* Sticky footer styles
--------------------------------------------------- */
-html {
-  position: relative;
-  min-height: 100%;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
 body {
-  /* Margin bottom by footer height */
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  /* Set the fixed height of the footer here */
-  height: 7%;
-  padding-top: 1%;
-  background-color: #0f5288;
+    display: flex;
+    min-height: 100vh;
+    flex-direction: column;
 }
 
-a {
-    color: #0f5288;
+main {
+    flex: 1 0 auto;
 }
-
-/* Custom page CSS
--------------------------------------------------- */
-/* Not required for template or sticky footer method. */
-
-body > .container {
-  padding: 60px 15px 0;
-}
-
-.footer > .container {
-  padding-right: 15px;
-  padding-left: 15px;
-}
-
-code {
-  font-size: 80%;
-}
-
-.bg-blue {
-    background-color: #0f5288;
-}
-
