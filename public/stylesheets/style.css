@@ -8,3 +8,19 @@ body {
 main {
     flex: 1 0 auto;
 }
+
+.dw-blue-1 { background-color: #0F5288 !important;}
+.dw-blue-2 { background-color: #3573A3 !important;}
+.dw-blue-3 { background-color: #5A94BD !important;}
+.dw-blue-4 { background-color: #80B5D8 !important;}
+.dw-blue-5 { background-color: #A5D6F2 !important;}
+
+.text-dw-blue-1 { color: #0F5288 !important;}
+.text-dw-blue-2 { color: #3573A3 !important;}
+.text-dw-blue-3 { color: #5A94BD !important;}
+.text-dw-blue-4 { color: #80B5D8 !important;}
+.text-dw-blue-5 { color: #A5D6F2 !important;}
+
+.btn {
+    color: #fff !important;
+}
