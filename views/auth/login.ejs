@@ -1,0 +1,63 @@
+<% include ../layouts/header.ejs %>
+<!-- Begin page content -->
+<body class="dw-blue-3">
+    <main style="">
+    <div class="container">
+        <div class="row">
+            <div class="col s12 m7 l7">
+
+            </div>
+            <div class="col s12 m5 l5" style="margin-top: 5%">
+                <div class="center-align">
+                    <img src="../images/fav.png" style="height: 25%; width: 25%;">
+                </div>
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab dw-blue-1">
+                                <a href="#login" class="left-align white-text">
+                                    Please login in
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div id="login">
+                            <div class="row">
+
+                                <form class="col s12">
+                                    <div class="row">
+
+                                        <div class="input-field col s12">
+                                            <i class="material-icons prefix">account_circle</i>
+                                            <input id="email" type="email" class="validate">
+                                            <label for="email">Email</label>
+                                        </div>
+
+                                        <div class="input-field col s12">
+                                            <i class="material-icons prefix">lock</i>
+                                            <input id="password" type="password" class="validate">
+                                            <label for="password">Password</label>
+                                        </div>
+
+                                        <div class="input-field col s12 center">
+                                            <button id="submit" type="submit" class="dw-blue-1 btn waves-effect">
+                                                Login
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+    </div>
+    </main>
+</body>
+
+<script type="text/javascript" src="javascripts/materialize.min.js"></script>
+
