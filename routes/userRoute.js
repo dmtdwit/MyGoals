@@ -18,13 +18,23 @@ router.get('/', function(req, res, next) {
     });
 });
 
-
 router.get('/profile', function(req, res, next) {
     res.render('user/profile',
         {
             title: 'User Profile'
         }
     );
+});
+
+router.get('/dashboard', function(req, res, next) {
+
+    models.User.findAll({
+    }).then(function(users) {
+        res.render('user/dashboard', {
+            title: 'Dashboard | Users',
+            users: users
+        });
+    });
 });
 
 module.exports = router;
