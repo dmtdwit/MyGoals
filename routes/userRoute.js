@@ -1,17 +1,21 @@
 var express = require('express');
 var router = express.Router();
+var models = require('../models');
 
 /* GET users listing. */
 router.get('/', function(req, res, next) {
-    var user_lists = models.User.findAll();
-    console.log(user_lists);
-    console.log("We are here at User page");
-    res.render('user.ejs',
-        {
-            title: 'Users List',
-            user: 'Sabin Pathak'
-        }
-    );
+    models.User.findAll({}).then(function(dbUser) {
+        const user_lists = {
+            user: dbUser
+        };
+        console.log("User Lists is ",user_lists);
+        res.render('user/user_lists.ejs',
+            {
+                title: 'Users List',
+                user: user_lists
+            }
+        );
+    });
 });
 
 
