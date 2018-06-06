@@ -1,0 +1,60 @@
+<%include ../layouts/header.ejs %>
+<%include ../layouts/navbar.ejs %>
+
+<body>
+<main>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m12 s12">
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab dw-blue-1">
+                                <a href="#create" class="left-align white-text">
+                                    Create New Award
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div id="create">
+                            <div class="row">
+                                <form class="col s12" method="get" action="save">
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <i class="material-icons prefix">assessment</i>
+                                            <input id="title" name="title" type="text" class="validate">
+                                            <label for="title">Award Title</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <select id="awardIcon" name="awardIcon">
+                                                <option value="" disabled selected>Choose your option</option>
+                                                <option value="assignment">Assignment <i class="material-icon">assignment</i></option>
+                                                <option value="book">Book <i class="material-icon">book</i></option>
+                                                <option value="star_rate">Star Rate<i class="material-icon">star_rate</i></option>
+                                            </select>
+                                            <label for="awardIcon">Select Icon For Award</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 center">
+                                            <button id="submit" type="submit" class="dw-blue-1 btn waves-effect">
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+<%include ../layouts/footer.ejs %>

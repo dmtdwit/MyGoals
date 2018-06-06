@@ -1,0 +1,36 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+<body class="bg">
+<main>
+    <div class="container">
+        <div class="row">
+            <h4 class="center-align col l9 m8 s12"> All Awards </h4>
+            <a class="btn col l3 m4 s12" style="margin-top: 3%" href="./create">Create New Award</a>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col l12 s12 m12">
+                <table class="bordered">
+                    <thead>
+                    <th> S. No. </th>
+                    <th> Award Title </th>
+                    <th> Action </th>
+                    </thead>
+                    <tbody>
+                    <% i = 1 %>
+                    <% awards.forEach(function (award) { %>
+                    <tr>
+                        <td> <%= i++ %> </td>
+                        <td> <%= award.title %> </td>
+                        <td> <a href="./edit?id=<%=award.id%>">Edit </a> | Delete </td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+<% include ../layouts/footer.ejs %>
