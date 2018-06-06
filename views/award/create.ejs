@@ -30,15 +30,26 @@
                                         </div>
                                     </div>
                                     <div class="row">
-                                        <div class="input-field col s12">
+                                        <div class="input-field col l6 m6 s12">
                                             <select id="awardIcon" name="awardIcon">
                                                 <option value="" disabled selected>Choose your option</option>
-                                                <option value="assignment">Assignment <i class="material-icon">assignment</i></option>
-                                                <option value="book">Book <i class="material-icon">book</i></option>
-                                                <option value="star_rate">Star Rate<i class="material-icon">star_rate</i></option>
+                                                <option value="flag">Flag</option>
+                                                <option value="book">Book</option>
+                                                <option value="star_rate">Star</option>
                                             </select>
                                             <label for="awardIcon">Select Icon For Award</label>
                                         </div>
+                                        <div class="input-field col l6 m6 s12">
+                                            <select id="awardIconColor" name="awardIconColor">
+                                                <option value="" disabled selected>Choose your option</option>
+                                                <option value="green">Green</option>
+                                                <option value="red">Red</option>
+                                                <option value="blue">Blue</option>
+                                                <option value="yellow">Yellow</option>
+                                            </select>
+                                            <label for="awardIconColor">Select Color of Icon For Award</label>
+                                        </div>
+                                        <a class="modal-trigger" href="#helpModal">Help</a>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12 center">
@@ -56,5 +67,45 @@
         </div>
     </div>
 </main>
+<div id="helpModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+       <h5 class="center-align">Icon And Its Name </h5>
+        <table>
+            <tr>
+                <th>Icon Name</th>
+                <th>Icon Symbol</th>
+            <tr>
+                <td>Assignment</td>
+                <td>
+                    <i class="material-icons red circle">flag</i>
+                    <i class="material-icons green circle">flag</i>
+                    <i class="material-icons blue circle">flag</i>
+                    <i class="material-icons yellow circle">flag</i>
+                </td>
+            </tr>
+            <tr>
+                <td>Book</td>
+                <td>
+                    <i class="material-icons red circle">book</i>
+                    <i class="material-icons green circle">book</i>
+                    <i class="material-icons blue circle">book</i>
+                    <i class="material-icons yellow circle">book</i>
+                </td>
+            </tr>
+            <tr>
+                <td>Star</td>
+                <td>
+                    <i class="material-icons red circle">grade</i>
+                    <i class="material-icons green circle">grade</i>
+                    <i class="material-icons blue circle">grade</i>
+                    <i class="material-icons yellow circle">grade</i>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <a href="" class="modal-close waves-effect waves-red red btn-flat">Close</a>
+    </div>
+</div>
 </body>
 <%include ../layouts/footer.ejs %>
