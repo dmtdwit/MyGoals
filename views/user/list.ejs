@@ -1,0 +1,33 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+<body class="bg">
+<main>
+    <div class="container">
+        <h4 class="center-align"> All Users </h4>
+        <hr>
+        <div class="row">
+            <div class="col l12 s12 m12">
+                <table class="bordered">
+                    <thead>
+                    <th> S. No. </th>
+                    <th> Name </th>
+                    <th> Email </th>
+                    </thead>
+                    <tbody>
+                    <% i = 1 %>
+                    <% users.forEach(function (user) { %>
+                    <tr>
+                        <td> <%= i++ %> </td>
+                        <td> <%= user.name %> </td>
+                        <td> <%= user.email %> </td>
+                    </tr>
+                    <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+<% include ../layouts/footer.ejs %>

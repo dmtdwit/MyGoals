@@ -15,15 +15,20 @@ router.get('/profile', function(req, res, next) {
     );
 });
 
-router.get('/dashboard', function(req, res, next) {
+router.get('/list', function(req, res, next) {
 
     models.User.findAll({
     }).then(function(users) {
-        res.render('user/dashboard', {
-            title: 'Dashboard | Users',
+        res.render('user/list', {
+            title: 'All Users',
             users: users
         });
     });
+});
+
+router.get('/dashboard', function(req, res, next) {
+
+
 });
 
 module.exports = router;
