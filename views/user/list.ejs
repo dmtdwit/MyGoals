@@ -3,29 +3,58 @@
 <body class="bg">
 <main>
     <div class="container">
-        <h4 class="center-align"> All Users </h4>
-        <hr>
+    <br><br>
         <div class="row">
+            <div class="col l12 s12 m12">
+                <div class="card">
+            <div class="card-tabs">
+                <ul class="tabs tabs-fixed-width">
+                    <li class="tab dw-blue-1">
+                        <a href="#user" class="left-align white-text">
+                            <i class="material-icons">person</i> <span class="tab-header"> All Users </span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <div class="card-content">
+                <div class="row">
             <div class="col l12 s12 m12">
                 <table class="bordered">
                     <thead>
-                    <th> S. No. </th>
-                    <th> Name </th>
-                    <th> Email </th>
+                        <th> S. No. </th>
+                        <th> Name </th>
+                        <th> Email </th>
+                        <th> Edit </th>
+                        <th> Delete </th>
                     </thead>
                     <tbody>
                     <% i = 1 %>
                     <% users.forEach(function (user) { %>
-                    <tr>
+                    <tr class="transparent">
                         <td> <%= i++ %> </td>
                         <td> <%= user.name %> </td>
-                        <td> <%= user.email %> </td>
+                        <td> <%= user.email + "@deerwalk.edu.np"%> </td>
+                        <td>
+                            <a href="/user/edit" class="btn-floating btn waves-effect waves-light dw-green-1">
+                                <i class="material-icons">edit</i>
+                            </a>
+                        </td>
+                        <td>
+                            <a href="/user/edit" class="btn-floating btn waves-effect waves-light red">
+                                <i class="material-icons">delete</i>
+                            </a>
+                        </td>
                     </tr>
                     <% }) %>
                     </tbody>
                 </table>
             </div>
         </div>
+            </div>
+        </div>
+            </div>
+        </div>
+
     </div>
 </main>
 </body>

@@ -21,10 +21,47 @@ main {
 .text-dw-blue-4 { color: #80B5D8 !important;}
 .text-dw-blue-5 { color: #A5D6F2 !important;}
 
+.dw-green-1 { background-color: #046031 !important;}
+.dw-green-2 { background-color: #237A4C !important;}
+.dw-green-3 { background-color: #429368 !important;}
+.dw-green-4 { background-color: #60AD83 !important;}
+.dw-green-5 { background-color: #7FC69E !important;}
+
+.text-dw-green-1 { color: #046031 !important;}
+.text-dw-green-2 { color: #237A4C !important;}
+.text-dw-green-3 { color: #429368 !important;}
+.text-dw-green-4 { color: #60AD83 !important;}
+.text-dw-green-5 { color: #7FC69E !important;}
+
 .btn {
     color: #fff !important;
 }
 
 .bg {
     background-color: #edf1f6;
+}
+
+/* Color alteration */
+
+.tabs .indicator {
+    background-color: transparent !important;
+}
+
+/* -- */
+
+.collection .collection-item.avatar p {
+    font-size: 22px !important;
+    padding-top: 2%;
+}
+
+.collection .collection-item.avatar .secondary-content {
+    font-size: 30px !important;
+}
+
+.collection .collection-item.avatar {
+    min-height: 63px !important;
+}
+
+.tab-header {
+    font-size: 22px;
 }

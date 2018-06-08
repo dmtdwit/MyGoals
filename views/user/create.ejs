@@ -7,7 +7,7 @@
 
     <div class="container">
         <div class="row">
-            <div class="col l12 m12 s12">
+            <div class="col l10 m10 s10 offset-s1 offset-m1 offset-l1">
 
                 <div class="card">
                     <div class="card-tabs">
@@ -23,36 +23,71 @@
                         <div id="create">
                             <div class="row">
 
-                                <form class="col s12">
+                                <form class="col s12" action="save" method="POST" autocomplete="off">
                                     <div class="row">
 
-                                        <div class="input-field col s6">
+                                        <div class="input-field col l6 m6 s12">
                                             <i class="material-icons prefix">account_circle</i>
                                             <input id="firstName" name="firstName" type="text" class="validate">
                                             <label for="firstName">First Name</label>
                                         </div>
 
-                                        <div class="input-field col s6">
+                                        <div class="input-field col l6 m6 s12">
                                             <input id="lastName" name="lastName" type="text" class="validate">
                                             <label for="lastName">Last Name</label>
                                         </div>
 
 
-                                        <div class="input-field col s12">
-                                            <i class="material-icons prefix">account_circle</i>
-                                            <input id="email" type="email" class="validate">
+                                        <div class="input-field col l6 m6 s12">
+                                            <i class="material-icons prefix">email</i>
+                                            <input id="email" type="text" name="email" class="validate">
                                             <label for="email">Email</label>
                                         </div>
 
-                                        <div class="input-field col s12">
-                                            <i class="material-icons prefix">lock</i>
-                                            <input id="password" type="password" class="validate">
-                                            <label for="password">Password</label>
+                                        <div class="input-field col l6 m6 s12">
+                                            <h6>@deerwalk.edu.np</h6>
                                         </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l6 m6 s12">
+                                            <select id="manager" name="manager" class="icons">
+                                                <option data-icon="../images/user.png" class="left circle" selected> None </option>
+                                                <% users.forEach(function(user){ %>
+                                                <option data-icon="../images/user.png" class="left circle" value="<%= user.email %>">
+                                                    <%= user.name %>
+                                                </option>
+                                                <% })%>
+                                            </select>
+                                            <label>Manager</label>
+                                        </div>
+
+                                        <div class="input-field col l6 m6 s12 center-align">
+                                            <div class="switch">
+                                                Employee
+                                                <label>
+                                                    <input type="checkbox" name="category">
+                                                    <span class="lever"></span>
+                                                </label>
+                                                Student
+                                            </div>
+                                            <br>
+                                            <div class="switch">
+                                                User
+                                                <label>
+                                                    <input type="checkbox" name="role">
+                                                    <span class="lever"></span>
+                                                </label>
+                                                Admin
+                                            </div>
+                                        </div>
+
+                                        <!--<div class="input-field col l6 m6 s12">-->
+                                            <!---->
+                                        <!--</div>-->
 
                                         <div class="input-field col s12 center">
                                             <button id="submit" type="submit" class="dw-blue-1 btn waves-effect">
-                                                Login
+                                                Create
                                             </button>
                                         </div>
 
@@ -70,4 +105,5 @@
 
 </main>
 </body>
+
 <% include ../layouts/footer.ejs %>
