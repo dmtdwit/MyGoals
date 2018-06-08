@@ -1,0 +1,111 @@
+<%include ../layouts/header.ejs %>
+<%include ../layouts/navbar.ejs %>
+
+<body>
+<main>
+    <br>
+    <br>
+    <div class="container">
+        <div class="row">
+            <div class="col l12 m12 s12">
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab dw-blue-1">
+                                <a href="#create" class="left-align white-text">
+                                    Create New Award
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div id="create">
+                            <div class="row">
+                                <form class="col s12" method="get" action="save">
+                                    <div class="row">
+                                        <div class="input-field col s12">
+                                            <i class="material-icons prefix">assessment</i>
+                                            <input id="title" name="title" type="text" class="validate">
+                                            <label for="title">Award Title</label>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l6 m6 s12">
+                                            <select id="iconName" name="iconName">
+                                                <option value="" disabled selected>Choose your option</option>
+                                                <option value="flag">Flag</option>
+                                                <option value="book">Book</option>
+                                                <option value="grade">Star</option>
+                                            </select>
+                                            <label for="iconName">Select Icon Name For Award</label>
+                                        </div>
+                                        <div class="input-field col l6 m6 s12">
+                                            <select id="iconColor" name="iconColor">
+                                                <option value="" disabled selected>Choose your option</option>
+                                                <option value="green">Green</option>
+                                                <option value="red">Red</option>
+                                                <option value="blue">Blue</option>
+                                                <option value="yellow">Yellow</option>
+                                            </select>
+                                            <label for="iconColor">Select Color of Icon For Award</label>
+                                        </div>
+                                        <a class="modal-trigger" href="#helpModal">Help</a>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col s12 center">
+                                            <button id="submit" type="submit" class="dw-blue-1 btn waves-effect">
+                                                Add
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+<div id="helpModal" class="modal modal-fixed-footer">
+    <div class="modal-content">
+       <h5 class="center-align">Icon And Its Name </h5>
+        <table>
+            <tr>
+                <th>Icon Name</th>
+                <th>Icon Symbol</th>
+            <tr>
+                <td>Assignment</td>
+                <td>
+                    <i class="material-icons red circle">flag</i>
+                    <i class="material-icons green circle">flag</i>
+                    <i class="material-icons blue circle">flag</i>
+                    <i class="material-icons yellow circle">flag</i>
+                </td>
+            </tr>
+            <tr>
+                <td>Book</td>
+                <td>
+                    <i class="material-icons red circle">book</i>
+                    <i class="material-icons green circle">book</i>
+                    <i class="material-icons blue circle">book</i>
+                    <i class="material-icons yellow circle">book</i>
+                </td>
+            </tr>
+            <tr>
+                <td>Star</td>
+                <td>
+                    <i class="material-icons red circle">grade</i>
+                    <i class="material-icons green circle">grade</i>
+                    <i class="material-icons blue circle">grade</i>
+                    <i class="material-icons yellow circle">grade</i>
+                </td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <a href="" class="modal-close waves-effect waves-red btn-flat">Close</a>
+    </div>
+</div>
+</body>
+<%include ../layouts/footer.ejs %>
