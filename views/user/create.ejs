@@ -52,11 +52,15 @@
                                         <div class="input-field col l6 m6 s12">
                                             <select id="manager" name="manager" class="icons">
                                                 <option data-icon="../images/user.png" class="left circle" selected> None </option>
-                                                <% users.forEach(function(user){ %>
-                                                <option data-icon="../images/user.png" class="left circle" value="<%= user.email %>">
+                                                <% users.forEach(function(user){
+
+                                                    if(user.RoleId == 2) {
+                                                %>
+                                                <option data-icon="../images/user.png" class="left circle" value="<%= user.id %>">
                                                     <%= user.name %>
                                                 </option>
-                                                <% })%>
+                                                <% }
+                                                    })%>
                                             </select>
                                             <label>Manager</label>
                                         </div>

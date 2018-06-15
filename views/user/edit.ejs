@@ -1,0 +1,105 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+
+<body class="bg">
+<br><br>
+<main>
+
+    <div class="container">
+        <div class="row">
+            <div class="col l10 m10 s10 offset-s1 offset-m1 offset-l1">
+
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab dw-blue-1">
+                                <a href="#edit" class="left-align white-text">
+                                    Edit user
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div id="edit">
+                            <div class="row">
+
+                                <form class="col s12" action="save" method="POST" autocomplete="off">
+                                    <div class="row">
+
+                                        <div class="input-field col l6 m6 s12">
+                                            <i class="material-icons prefix">account_circle</i>
+                                            <input id="firstName" name="firstName" type="text" value="<%= firstName %>" class="validate">
+                                            <label for="firstName">First Name</label>
+                                        </div>
+
+                                        <div class="input-field col l6 m6 s12">
+                                            <input id="lastName" name="lastName" type="text" value="<%= lastName %>" class="validate">
+                                            <label for="lastName">Last Name</label>
+                                        </div>
+
+
+                                        <div class="input-field col l6 m6 s12">
+                                            <i class="material-icons prefix">email</i>
+                                            <input id="email" type="text" name="email" value="<%= user.email %>" class="validate">
+                                            <label for="email">Email</label>
+                                        </div>
+
+                                        <div class="input-field col l6 m6 s12">
+                                            <h6>@deerwalk.edu.np</h6>
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="input-field col l6 m6 s12">
+                                            <select id="manager" name="manager" class="icons">
+                                                <option data-icon="../images/user.png" class="left circle" selected> None </option>
+                                                <% users.forEach(function(manager){ %>
+                                                <option data-icon="../images/user.png" class="left circle" value="<%= manager.email %>">
+                                                    <%= manager.name %>
+                                                </option>
+                                                <% })%>
+                                            </select>
+                                            <label for="manager">Manager</label>
+                                        </div>
+
+                                        <div class="input-field col l6 m6 s12 center-align">
+                                            <div class="switch">
+                                                Employee
+                                                <label>
+                                                    <input type="checkbox" name="category">
+                                                    <span class="lever"></span>
+                                                </label>
+                                                Student
+                                            </div>
+                                            <br>
+                                            <div class="switch">
+                                                User
+                                                <label>
+                                                    <input type="checkbox" name="role">
+                                                    <span class="lever"></span>
+                                                </label>
+                                                Admin
+                                            </div>
+                                        </div>
+
+                                        <div class="input-field col s12 center">
+                                            <button id="submit" type="submit" class="dw-blue-1 btn waves-effect">
+                                                Update
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </form>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>
+
+<% include ../layouts/footer.ejs %>

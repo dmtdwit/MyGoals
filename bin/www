@@ -31,6 +31,33 @@ models.sequelize.sync().then(function() {
     });
     server.on('error', onError);
     server.on('listening', onListening);
+
+    models.Role.findOne({
+        where: {
+            id: 1
+        }
+    }).then(function(result){
+        if(!result) {
+                models.Role.create({
+                    authority: "ADMIN"
+                });
+                models.Role.create({
+                    authority: "USER"
+                });
+                models.Role.create({
+                    authority: "SUPERADMIN"
+                });
+                models.User.create({
+                    name: "superadmin",
+                    password: "superadmin123",
+                    email: "rnd",
+                    category: "EMPLOYEE"
+                }).then(function(result){
+                    return result.setRole(1);
+                });
+        }
+    });
+
 });
 
 console.log("Server listening at http://localhost:" + port);
