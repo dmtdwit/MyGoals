@@ -7,11 +7,11 @@
     <br>
     <div class="container">
         <div class="row">
-            <div class="col l12 m12 s12">
+            <div class="col l10 m10 s10 offset-s1 offset-m1 offset-l1">
                 <div class="card">
                     <div class="card-tabs">
                         <ul class="tabs tabs-fixed-width">
-                            <li class="tab dw-blue-1">
+                            <li class="tab dw-green-1">
                                 <a href="#create" class="left-align white-text">
                                     Create New Award
                                 </a>
@@ -24,32 +24,54 @@
                                 <form class="col s12" method="get" action="save">
                                     <div class="row">
                                         <div class="input-field col s12">
-                                            <i class="material-icons prefix">assessment</i>
+                                            <i class="material-icons prefix">verified_user</i>
                                             <input id="title" name="title" type="text" class="validate">
-                                            <label for="title">Award Title</label>
+                                            <label for="title">Title</label>
                                         </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col l6 m6 s12">
-                                            <select id="iconName" name="iconName">
+                                            <select id="iconName" name="iconName" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
-                                                <option value="flag">Flag</option>
-                                                <option value="book">Book</option>
-                                                <option value="grade">Star</option>
+                                                <option value="nature">Nature</option>
+                                                <option value="grade">Grade</option>
+                                                <option value="tag_faces">Tag Faces</option>
+                                                <option value="pan_tool">Pan Tool</option>
+                                                <option value="perm_camera_mic">Perm Camera Mic</option>
+                                                <option value="polymer">Polymer</option>
+                                                <option value="public">Public</option>
+                                                <option value="redeem">Redeem</option>
+                                                <option value="school">School</option>
+                                                <option value="spa">Spa</option>
+                                                <option value="stars">Stars</option>
+                                                <option value="star_border">Star Border</option>
+                                                <option value="thumb_up">Thumb Up</option>
+                                                <option value="toys">Toys</option>
+                                                <option value="verified_user">Verified User</option>
+                                                <option value="watch">Watch</option>
+                                                <option value="wb_sunny">WB Sunny</option>
+                                                <option value="whatshot">Whatshot</option>
                                             </select>
-                                            <label for="iconName">Select Icon Name For Award</label>
+                                            <label for="iconName">Select Icon</label>
                                         </div>
                                         <div class="input-field col l6 m6 s12">
-                                            <select id="iconColor" name="iconColor">
+                                            <select id="iconColor" name="iconColor" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
                                                 <option value="green">Green</option>
                                                 <option value="red">Red</option>
                                                 <option value="blue">Blue</option>
                                                 <option value="yellow">Yellow</option>
+                                                <option value="pink">Pink</option>
+                                                <option value="purple">Purple</option>
+                                                <option value="indigo">Indigo</option>
+                                                <option value="cyan">Cyan</option>
+                                                <option value="amber">Amber</option>
+                                                <option value="orange">Orange</option>
                                             </select>
-                                            <label for="iconColor">Select Color of Icon For Award</label>
+                                            <label for="iconColor">Select Color</label>
                                         </div>
-                                        <a class="modal-trigger" href="#helpModal">Help</a>
+                                        <div id="sample" class="input-field col l12 m12 s12 center-align">
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12 center">
@@ -67,45 +89,5 @@
         </div>
     </div>
 </main>
-<div id="helpModal" class="modal modal-fixed-footer">
-    <div class="modal-content">
-       <h5 class="center-align">Icon And Its Name </h5>
-        <table>
-            <tr>
-                <th>Icon Name</th>
-                <th>Icon Symbol</th>
-            <tr>
-                <td>Assignment</td>
-                <td>
-                    <i class="material-icons red circle">flag</i>
-                    <i class="material-icons green circle">flag</i>
-                    <i class="material-icons blue circle">flag</i>
-                    <i class="material-icons yellow circle">flag</i>
-                </td>
-            </tr>
-            <tr>
-                <td>Book</td>
-                <td>
-                    <i class="material-icons red circle">book</i>
-                    <i class="material-icons green circle">book</i>
-                    <i class="material-icons blue circle">book</i>
-                    <i class="material-icons yellow circle">book</i>
-                </td>
-            </tr>
-            <tr>
-                <td>Star</td>
-                <td>
-                    <i class="material-icons red circle">grade</i>
-                    <i class="material-icons green circle">grade</i>
-                    <i class="material-icons blue circle">grade</i>
-                    <i class="material-icons yellow circle">grade</i>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <a href="" class="modal-close waves-effect waves-red btn-flat">Close</a>
-    </div>
-</div>
 </body>
 <%include ../layouts/footer.ejs %>

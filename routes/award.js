@@ -35,7 +35,6 @@ router.get('/save', function (req, res, next) {
 router.get('/edit', function (req, res, next) {
     var id = req.query['id'];
     console.log("Id is Edit ",id);
-    // console.log("Award is ", models.Award.findById(id));
     models.Award.findOne({where:{id: id}}).then(function (award) {
         res.render('award/edit.ejs', {
             title: 'Edit Award | My Goals',
