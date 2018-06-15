@@ -19,7 +19,7 @@ module.exports = function(sequelize, DataTypes) {
         }
     });
 
-    User.belongsToMany(User, {as: 'Subordinates', through: 'Manages'});
+    User.belongsTo(User, {as: 'Manager'});
 
     User.associate = function (models) {
         models.User.belongsTo(models.Role);
