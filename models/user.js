@@ -16,6 +16,10 @@ module.exports = function(sequelize, DataTypes) {
         category: {
             type: DataTypes.ENUM(['EMPLOYEE','STUDENT']),
             allowNull: false
+        },
+        imageName: {
+            type: DataTypes.STRING,
+            allowNull: true
         }
     });
 
