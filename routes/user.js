@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
+var fs = require('fs');
 // var md5 = require('md5');
 var sh = require('../service/sessionHandler');
+var formidable = require('formidable');
 
 router.get('/create', function(req, res, next) {
     models.User.findAll({
@@ -75,14 +77,21 @@ router.get('/profile', function(req, res, next) {
                 id: result.ManagerId
             }
         }).then(function(manager){
+            models.User.findAll({
+                where:{
+                    managerId: id
+                }
+            }).then(function (subordinates) {
                 res.render('user/profile',
                     {
                         title: result.name + ' | User Profile',
                         user: result,
                         manager: manager,
+                        subordinates: subordinates,
                         sess: sh.getSession(req)
                     }
                 );
+            });
         });
     });
 });
@@ -114,13 +123,43 @@ router.get('/dashboard', function(req, res, next) {
 });
 
 router.get('/profilePicture', function (req, res, next) {
-    var sess = req.session;
     res.render('user/profilePicture',
         {
             title: 'Edit Profile Picture | MyGoals',
-            sess: sess
+            sess: sh.getSession(req)
         }
     );
+});
+
+router.post('/savePP', function (req, res, next) {
+    console.log("We are in savePP");
+    var sess = sh.getSession(req);
+    var form = new formidable.IncomingForm();
+    console.log("form is ", form);
+    form.parse(req, function (err, fields, files) {
+        var oldpath = files.profilePicture.path;
+        oldFilename = files.profilePicture.name;
+        arrayOfFilename = oldFilename.split('.');
+        fileExt = arrayOfFilename[arrayOfFilename.length-1];
+        newFilename = sess.userId+'.'+fileExt;
+        var newpath = '../public/profilePictures/' + newFilename;
+        fs.rename(oldpath, newpath, function (err) {
+            if (err) throw err;
+            models.User.findOne({
+                where:{
+                    id: sess.userId
+                }
+            }).then(function (user) {
+                if(user){
+                    user.updateAttributes({
+                        imageName: newFilename
+                    }).then(function () {
+                        res.redirect('profile?id='+sess.userId);
+                    })
+                }
+            });
+        });
+    });
 });
 
 module.exports = router;
