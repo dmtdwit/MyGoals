@@ -103,11 +103,11 @@ router.get('/list', function(req, res, next) {
 });
 
 router.get('/dashboard', function(req, res, next) {
-    var sess = req.session;
+
     res.render('user/dashboard',
         {
             title: 'Dashboard',
-            sess: sess
+            sess: sh.getSession(req)
         }
     );
 
