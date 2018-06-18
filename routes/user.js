@@ -113,4 +113,14 @@ router.get('/dashboard', function(req, res, next) {
 
 });
 
+router.get('/profilePicture', function (req, res, next) {
+    var sess = req.session;
+    res.render('user/profilePicture',
+        {
+            title: 'Edit Profile Picture | MyGoals',
+            sess: sess
+        }
+    );
+});
+
 module.exports = router;
