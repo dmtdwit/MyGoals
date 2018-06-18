@@ -18,8 +18,7 @@ router.get('/create', function(req, res, next) {
 router.get('/edit', function(req, res, next) {
     var id = req.query['id'];
 
-    models.User.findAll({
-    }).then(function(users) {
+    models.User.findAll({}).then(function(users) {
         models.User.findOne({where:{id: id}}).then(function (user) {
             res.render('user/edit', {
                 title: 'Edit User | My Goals',
@@ -62,26 +61,38 @@ router.post('/save', function(req, res, next) {
     res.redirect("/admin/dashboard");
 });
 
-router.get('/edit', function(req, res, next) {
-    res.render('user/edit',
-        {
-            title: 'Edit User'
-        }
-    );
-});
-
 router.get('/profile', function(req, res, next) {
-    res.render('user/profile',
-        {
-            title: 'User Profile',
-            sess: sh.getSession(req)
+
+    var id = req.query['id'];
+
+    models.User.findOne({
+        where: {
+            id: id
         }
-    );
+    }).then(function(result){
+        models.User.findOne({
+            where: {
+                id: result.ManagerId
+            }
+        }).then(function(manager){
+                res.render('user/profile',
+                    {
+                        title: result.name + ' | User Profile',
+                        user: result,
+                        manager: manager,
+                        sess: sh.getSession(req)
+                    }
+                );
+        });
+    });
 });
 
 router.get('/list', function(req, res, next) {
 
     models.User.findAll({
+        where: {
+            RoleId: 2
+        }
     }).then(function(users) {
         res.render('user/list', {
             title: 'All Users',

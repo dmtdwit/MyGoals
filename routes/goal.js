@@ -27,11 +27,6 @@ router.post('/save', function(req, res, next) {
     }
 
     if (!req.body.goal) {
-        models.User.findOne({
-            where: {
-                email: req.body.email
-            }
-        }).then(function (user) {
             models.Goal.create({
                 goal: req.body.goal,
                 goalType: goalType,
@@ -40,9 +35,8 @@ router.post('/save', function(req, res, next) {
                 deadline: req.body.deadline,
                 progress: 0.0
             }).then(function (result) {
-                return result.setUser(user.id);
+                return result.setUser(req.body.id);
             });
-        });
         res.redirect('/user/dashboard/?m=101')
     } else {
         res.redirect('/goal/create/?e=000');

@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+var models = require('../models');
 var sh = require('../service/sessionHandler')
 
 
@@ -11,9 +12,22 @@ router.get('/dashboard', function(req, res, next) {
         } else if (sess.role !== "ADMIN") {
             res.redirect('/?e=102'); // Not authorized
         } else {
-            res.render('admin/dashboard', {
-                title: 'Dashboard',
-                sess: sess
+            models.User.count({
+                where: {
+                    RoleId: 2
+                }
+            }).then(function(userCount){
+                models.Goal.count({}).then(function(goalCount) {
+                    models.Goal.count({}).then(function(awardCount) {
+                        res.render('admin/dashboard', {
+                            title: 'Dashboard',
+                            sess: sess,
+                            users: userCount,
+                            goals: goalCount,
+                            awards: awardCount,
+                        });
+                    });
+                });
             });
         }
 });

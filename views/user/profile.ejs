@@ -5,14 +5,17 @@
 <main>
     <div class="container">
         <div class="row">
+            <% if (manager) { %>
             <h6>
-                Manager <img src="../images/user.png" style="height: 4%; width: 4%; margin-bottom: -1%;">
+                Manager: <img src="../images/user.png" style="height: 4%; width: 4%; margin-bottom: -1%;"
+                              class="tooltipped" data-position="right" data-tooltip="<%= manager.name %>">
             </h6>
+            <% } %>
         </div>
         <div class="row">
             <div class="col l12 m12 s12 center-align">
                 <img src="../images/user.png" style="height: 25%; width: 25%;">
-                <h4> John Doe </h4>
+                <h4> <%= user.name %> </h4>
             </div>
         </div>
         <div class="row">

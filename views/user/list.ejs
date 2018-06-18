@@ -24,6 +24,7 @@
                         <th> S. No. </th>
                         <th> Name </th>
                         <th> Email </th>
+                        <th> View </th>
                         <th> Edit </th>
                         <th> Delete </th>
                     </thead>
@@ -34,6 +35,11 @@
                         <td> <%= i++ %> </td>
                         <td> <%= user.name %> </td>
                         <td> <%= user.email + "@deerwalk.edu.np"%> </td>
+                        <td>
+                            <a href="/user/profile?id=<%= user.id %>" class="btn-floating btn waves-effect waves-light dw-blue-1">
+                                <i class="material-icons">visibility</i>
+                            </a>
+                        </td>
                         <td>
                             <a href="/user/edit?id=<%= user.id %>" class="btn-floating btn waves-effect waves-light dw-green-1">
                                 <i class="material-icons">edit</i>
