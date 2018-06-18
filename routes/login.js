@@ -50,10 +50,10 @@ router.post('/auth', function(req, res, next) {
             if(result.password === req.body.password) {
 
                 if(result.RoleId === 2) {
-                    sh.setSession(req, result.name, result.email, "USER");
+                    sh.setSession(req, result.id, result.name, result.email, "USER");
                     res.redirect('/user/dashboard');
                 } else {
-                    sh.setSession(req, result.name, result.email, "ADMIN");
+                    sh.setSession(req, result.id, result.name, result.email, "ADMIN");
                     res.redirect('/admin/dashboard');
                 }
             } else {

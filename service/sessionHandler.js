@@ -1,8 +1,9 @@
 module.exports = {
 
-    setSession: function(req, name, email, role) {
+    setSession: function(req, id, name, email, role) {
         var sess = req.session;
 
+        sess.id = id;
         sess.name = name;
         sess.email = email;
         sess.role = role;
