@@ -4,15 +4,19 @@ var models = require('../models');
 var sh = require('../service/sessionHandler');
 // var md5 = require('md5');
 
+router.get('/', function (req, res, next) {
+    res.redirect('/login')
+});
+
 /* GET home page. */
-router.get('/', function(req, res, next) {
+router.get('/login', function(req, res, next) {
     var c = req.query['e'];
     var message, type;
 
     switch(c) {
         case "101":
             message = "Please login first.";
-            type = "warn";
+            type = "warning";
             break;
         case "102":
             message = "You are authorized to view this page.";
@@ -20,21 +24,22 @@ router.get('/', function(req, res, next) {
             break;
         case "103":
             message = "Email/password do not match";
-            type = "warn";
+            type = "warning";
             break;
         case "104":
             message = "Email does not exist.";
-            type = "warn";
+            type = "warning";
             break;
         default:
             message = "";
+            type = "";
     }
 
     res.render('auth/login',
         {
             title: 'Login',
             message: message,
-            type: type
+            messageType: type
         }
     );
 });
@@ -57,10 +62,10 @@ router.post('/auth', function(req, res, next) {
                     res.redirect('/admin/dashboard');
                 }
             } else {
-                res.redirect('/?e=103'); // Email/Password do not match
+                res.redirect('login?e=103'); // Email/Password do not match
             }
         } else {
-            res.redirect('/?e=104'); // Email does not exist
+            res.redirect('login?e=104'); // Email does not exist
         }
     })
 });

@@ -4,11 +4,9 @@
 <body class="bg">
 <br><br>
 <main>
-
     <div class="container">
         <div class="row">
             <div class="col l10 m10 s10 offset-s1 offset-m1 offset-l1">
-                Session: <%=sess%>
                 <br>
                 <div class="card">
                     <div class="card-tabs">
@@ -23,7 +21,7 @@
                     <div class="card-content">
                         <div id="create">
                             <div class="row">
-                                <form method="post" enctype="multipart/form-data" action="savePP">
+                                <form method="post" enctype="multipart/form-data" action="savePP" onsubmit="return validateProfilePicture();">
                                     <label for="profilePicture">Profile Picture</label>
                                     <div class="input-field col s12">
                                         <i class="material-icons prefix">photo</i>
@@ -39,7 +37,6 @@
                         </div>
                     </div>
                 </div>
-
             </div>
         </div>
     </div>

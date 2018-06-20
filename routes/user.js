@@ -154,8 +154,8 @@ router.post('/savePP', function (req, res, next) {
                     user.updateAttributes({
                         imageName: newFilename
                     }).then(function () {
-                        res.redirect('profile?id='+sess.userId);
-                    })
+                        res.redirect('./profile?id='+sess.userId)
+                    });
                 }
             });
         });

@@ -1,7 +1,7 @@
 <%include ../layouts/header.ejs %>
 <%include ../layouts/navbar.ejs %>
 
-<body>
+<body onload="displaySample();">
 <main>
     <br>
     <br>
@@ -21,7 +21,7 @@
                     <div class="card-content">
                         <div id="create">
                             <div class="row">
-                                <form class="col s12" method="get" action="update">
+                                <form class="col s12" method="get" action="update" onsubmit="return validateAward();">
                                     <input type="hidden" value="<%=award.id%>" name="id" id="id"/>
                                     <div class="row">
                                         <div class="input-field col s12">
@@ -32,25 +32,48 @@
                                     </div>
                                     <div class="row">
                                         <div class="input-field col l6 m6 s12">
-                                            <select id="iconName" name="iconName">
+                                            <select id="iconName" name="iconName" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
-                                                <option value="flag" <% if(award.iconName == 'flag'){ %> selected="true" <%}%>>Flag</option>
-                                                <option value="book" <% if(award.iconName == 'book'){ %> selected="true" <%}%>>Book</option>
-                                                <option value="grade" <% if(award.iconName == 'grade'){ %> selected="true" <%}%>>Star</option>
+                                                <option value="nature" <% if(award.iconName == 'nature'){ %> selected="true" <%}%>>Nature</option>
+                                                <option value="grade" <% if(award.iconName == 'grade'){ %> selected="true" <%}%>>Grade</option>
+                                                <option value="tag_faces" <% if(award.iconName == 'tag_faces'){ %> selected="true" <%}%>>Tag Faces</option>
+                                                <option value="pan_tool" <% if(award.iconName == 'pan_tool'){ %> selected="true" <%}%>>Pan Tool</option>
+                                                <option value="perm_camera_mic" <% if(award.iconName == 'prem_camera_mic'){ %> selected="true" <%}%>>Perm Camera Mic</option>
+                                                <option value="polymer" <% if(award.iconName == 'polymer'){ %> selected="true" <%}%>>Polymer</option>
+                                                <option value="public" <% if(award.iconName == 'public'){ %> selected="true" <%}%>>Public</option>
+                                                <option value="redeem" <% if(award.iconName == 'redeem'){ %> selected="true" <%}%>>Redeem</option>
+                                                <option value="school" <% if(award.iconName == 'school'){ %> selected="true" <%}%>>School</option>
+                                                <option value="spa" <% if(award.iconName == 'spa'){ %> selected="true" <%}%>>Spa</option>
+                                                <option value="stars" <% if(award.iconName == 'stars'){ %> selected="true" <%}%>>Stars</option>
+                                                <option value="star_border" <% if(award.iconName == 'star_border'){ %> selected="true" <%}%>>Star Border</option>
+                                                <option value="thumb_up" <% if(award.iconName == 'thumb_up'){ %> selected="true" <%}%>>Thumb Up</option>
+                                                <option value="toys" <% if(award.iconName == 'toys'){ %> selected="true" <%}%>>Toys</option>
+                                                <option value="verified_user" <% if(award.iconName == 'verified_user'){ %> selected="true" <%}%>>Verified User</option>
+                                                <option value="watch" <% if(award.iconName == 'watch'){ %> selected="true" <%}%>>Watch</option>
+                                                <option value="wb_sunny" <% if(award.iconName == 'wb_sunny'){ %> selected="true" <%}%>>WB Sunny</option>
+                                                <option value="whatshot" <% if(award.iconName == 'whatshot'){ %> selected="true" <%}%>>Whatshot</option>
                                             </select>
                                             <label for="iconName">Select Icon Name For Award</label>
                                         </div>
                                         <div class="input-field col l6 m6 s12">
-                                            <select id="iconColor" name="iconColor">
+                                            <select id="iconColor" name="iconColor" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
                                                 <option value="green" <% if(award.iconColor == 'green'){ %> selected="true" <%}%>>Green</option>
+                                                <option value="white" <% if(award.iconColor == 'white'){ %> selected="true" <%}%>>White</option>
                                                 <option value="red" <% if(award.iconColor == 'red'){ %> selected="true" <%}%>>Red</option>
                                                 <option value="blue" <% if(award.iconColor == 'blue'){ %> selected="true" <%}%>>Blue</option>
                                                 <option value="yellow" <% if(award.iconColor == 'yellow'){ %> selected="true" <%}%>>Yellow</option>
+                                                <option value="pink" <% if(award.iconColor == 'pink'){ %> selected="true" <%}%>>Pink</option>
+                                                <option value="purple" <% if(award.iconColor == 'purple'){ %> selected="true" <%}%>>Purple</option>
+                                                <option value="indigo" <% if(award.iconColor == 'indigo'){ %> selected="true" <%}%>>Indigo</option>
+                                                <option value="cyan" <% if(award.iconColor == 'cyan'){ %> selected="true" <%}%>>Cyan</option>
+                                                <option value="amber" <% if(award.iconColor == 'amber'){ %> selected="true" <%}%>>Amber</option>
+                                                <option value="orange" <% if(award.iconColor == 'orange'){ %> selected="true" <%}%>>Orange</option>
                                             </select>
                                             <label for="iconColor">Select Color of Icon For Award</label>
                                         </div>
-                                        <a class="modal-trigger" href="#helpModal">Help</a>
+                                        <div id="sample" class="input-field col l12 m12 s12 center-align">
+                                        </div>
                                     </div>
                                     <div class="row">
                                         <div class="input-field col s12 center">
@@ -68,45 +91,5 @@
         </div>
     </div>
 </main>
-<div id="helpModal" class="modal modal-fixed-footer">
-    <div class="modal-content">
-       <h5 class="center-align">Icon And Its Name </h5>
-        <table>
-            <tr>
-                <th>Icon Name</th>
-                <th>Icon Symbol</th>
-            <tr>
-                <td>Assignment</td>
-                <td>
-                    <i class="material-icons red circle">flag</i>
-                    <i class="material-icons green circle">flag</i>
-                    <i class="material-icons blue circle">flag</i>
-                    <i class="material-icons yellow circle">flag</i>
-                </td>
-            </tr>
-            <tr>
-                <td>Book</td>
-                <td>
-                    <i class="material-icons red circle">book</i>
-                    <i class="material-icons green circle">book</i>
-                    <i class="material-icons blue circle">book</i>
-                    <i class="material-icons yellow circle">book</i>
-                </td>
-            </tr>
-            <tr>
-                <td>Star</td>
-                <td>
-                    <i class="material-icons red circle">grade</i>
-                    <i class="material-icons green circle">grade</i>
-                    <i class="material-icons blue circle">grade</i>
-                    <i class="material-icons yellow circle">grade</i>
-                </td>
-            </tr>
-        </table>
-    </div>
-    <div class="modal-footer">
-        <a href="" class="modal-close waves-effect waves-red btn-flat">Close</a>
-    </div>
-</div>
 </body>
 <%include ../layouts/footer.ejs %>

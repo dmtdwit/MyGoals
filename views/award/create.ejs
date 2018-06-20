@@ -21,7 +21,7 @@
                     <div class="card-content">
                         <div id="create">
                             <div class="row">
-                                <form class="col s12" method="get" action="save">
+                                <form class="col s12" method="get" action="save" onsubmit="return validateAward();">
                                     <div class="row">
                                         <div class="input-field col s12">
                                             <i class="material-icons prefix">verified_user</i>
@@ -58,6 +58,7 @@
                                             <select id="iconColor" name="iconColor" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
                                                 <option value="green">Green</option>
+                                                <option value="white">White</option>
                                                 <option value="red">Red</option>
                                                 <option value="blue">Blue</option>
                                                 <option value="yellow">Yellow</option>

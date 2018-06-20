@@ -17,6 +17,7 @@
     "morgan": "~1.9.0",
     "mysql": "^2.15.0",
     "mysql2": "^1.5.3",
+    "noty": "^3.2.0-beta",
     "npm": "^6.1.0",
     "passport-oauth2-password-grant": "0.0.4",
     "sequelize": "^4.37.10"

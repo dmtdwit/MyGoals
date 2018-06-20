@@ -24,7 +24,7 @@
                         <div id="login">
                             <div class="row">
 
-                                <form class="col s12" action="/auth" method="POST" autocomplete="off">
+                                <form class="col s12" action="/auth" method="POST" autocomplete="off" onsubmit="return validateLoginForm();">
                                     <div class="row">
 
                                         <div class="input-field col s8">
@@ -56,9 +56,4 @@
     </main>
 </body>
 
-<script type="text/javascript" src="../javascripts/jquery-3.3.1.js"></script>
-<script type="text/javascript" src="../javascripts/materialize.min.js"></script>
-<script type="text/javascript" src="../javascripts/datatables.min.js"></script>
-<script type="text/javascript" src="../javascripts/script.js"></script>
-</html>
-
+<% include ../layouts/footer.ejs %>
