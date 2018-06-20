@@ -5,14 +5,17 @@ var sh = require('../service/sessionHandler')
 
 router.get('/create', function(req, res, next) {
 
-    res.render('goal/create', {
-        title: 'Create New Goal',
-        sess: sh.getSession(req)
-    });
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
 
-});
-
-router.get('/edit', function(req, res, next) {
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        res.render('goal/create', {
+            title: 'Create New Goal | ' + sess.name,
+            sess: sess
+        });
+    }
 
 });
 
@@ -25,49 +28,121 @@ router.post('/save', function(req, res, next) {
     } else {
         goalType = "ORGANIZATIONAL"
     }
-
-    if (!req.body.goal) {
-            models.Goal.create({
-                goal: req.body.goal,
-                goalType: goalType,
-                goalStatus: "PENDING",
-                setDate: new Date(),
-                deadline: req.body.deadline,
-                progress: 0.0
-            }).then(function (result) {
-                return result.setUser(req.body.id);
-            });
-        res.redirect('/user/dashboard/?m=101')
-    } else {
-        res.redirect('/goal/create/?e=000');
-    }
-});
-
-router.get('/edit', function(req, res, next) {
-    res.render('goal/edit',
-        {
-            title: 'Edit Goal'
-        }
-    );
-});
-
-router.get('/profile', function(req, res, next) {
-    res.render('user/profile',
-        {
-            title: 'User Profile'
-        }
-    );
+    models.Goal.create({
+        goal: req.body.goal,
+        goalType: goalType,
+        goalStatus: "PENDING",
+        setDate: new Date(),
+        deadline: req.body.deadline,
+        progress: 0.0
+    }).then(function (result) {
+        return result.setUser(req.body.id);
+    });
+    res.redirect('/user/dashboard?m=101')
 });
 
 router.get('/list', function(req, res, next) {
 
-    models.Goal.findAll({
-    }).then(function(goals) {
-        res.render('goal/list', {
-            title: 'All Goals',
-            goals: goals
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+    
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.Goal.findAll({
+            where: {
+                UserId: sess.userId
+            }
+        }).then(function (goals) {
+                res.render('goal/list', {
+                    title: 'All My Goals | ' + sess.name,
+                    goals: goals,
+                    sess: sess
+                });
         });
+    }
+});
+
+router.get('/updateProgress', function(req, res, next){
+
+    var id = req.query['id'];
+    var progress = req.query['progress'];
+
+    models.Goal.find({where:{
+        id: id
+    }}).then(function(goal) {
+        if(goal){
+            if(progress == 100) {
+                goal.updateAttributes({
+                    progress: progress,
+                    goalStatus: "COMPLETED"
+                });
+            } else {
+                goal.updateAttributes({
+                    progress: progress
+                });
+            }
+        }
     });
+});
+
+router.get('/action', function(req, res, next) {
+
+    sh.checkSession(req, res);
+
+    var id = req.query['g'];
+    var action = req.query['q'];
+    var sess = sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.Goal.findOne({
+            where: {
+                id: id
+            }
+        }).then(function(goal){
+            if(goal){
+                goal.updateAttributes({
+                    goalStatus: action,
+                    setDate: new Date()
+                }).then(function () {
+                    res.redirect('/user/dashboard')
+                });
+            }
+        });
+    }
+});
+
+router.get('/sub-list', function(req, res, next) {
+
+    sh.checkSession(req, res);
+
+    var id = req.query['id'];
+    var sess = sh.getSession(req);
+    
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.Goal.findAll({
+            where: {
+                UserId: id
+            }
+        }).then(function (result) {
+            models.User.findOne({
+                where: {
+                    id: id
+                }
+            }).then(function(subordinate){
+                res.render('goal/sub-list', {
+                    title: subordinate.name + ' | Subordinate Goals',
+                    goals: result,
+                    subordinate: subordinate,
+                    sess: sess
+                })
+            });
+        });
+    }
 });
 
 module.exports = router;

@@ -1,7 +1,7 @@
 <%include ../layouts/header.ejs %>
 <%include ../layouts/navbar.ejs %>
 
-<body onload="displaySample();">
+<body>
 <main>
     <br>
     <br>
@@ -38,7 +38,7 @@
                                                 <option value="grade" <% if(award.iconName == 'grade'){ %> selected="true" <%}%>>Grade</option>
                                                 <option value="tag_faces" <% if(award.iconName == 'tag_faces'){ %> selected="true" <%}%>>Tag Faces</option>
                                                 <option value="pan_tool" <% if(award.iconName == 'pan_tool'){ %> selected="true" <%}%>>Pan Tool</option>
-                                                <option value="perm_camera_mic" <% if(award.iconName == 'prem_camera_mic'){ %> selected="true" <%}%>>Perm Camera Mic</option>
+                                                <option value="perm_camera_mic" <% if(award.iconName == 'perm_camera_mic'){ %> selected="true" <%}%>>Perm Camera Mic</option>
                                                 <option value="polymer" <% if(award.iconName == 'polymer'){ %> selected="true" <%}%>>Polymer</option>
                                                 <option value="public" <% if(award.iconName == 'public'){ %> selected="true" <%}%>>Public</option>
                                                 <option value="redeem" <% if(award.iconName == 'redeem'){ %> selected="true" <%}%>>Redeem</option>
@@ -59,7 +59,6 @@
                                             <select id="iconColor" name="iconColor" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
                                                 <option value="green" <% if(award.iconColor == 'green'){ %> selected="true" <%}%>>Green</option>
-                                                <option value="white" <% if(award.iconColor == 'white'){ %> selected="true" <%}%>>White</option>
                                                 <option value="red" <% if(award.iconColor == 'red'){ %> selected="true" <%}%>>Red</option>
                                                 <option value="blue" <% if(award.iconColor == 'blue'){ %> selected="true" <%}%>>Blue</option>
                                                 <option value="yellow" <% if(award.iconColor == 'yellow'){ %> selected="true" <%}%>>Yellow</option>

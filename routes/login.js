@@ -70,4 +70,9 @@ router.post('/auth', function(req, res, next) {
     })
 });
 
+router.get('/logout', function(req, res, next){
+    sh.getSession(req).destroy();
+    res.redirect("/");
+});
+
 module.exports = router;

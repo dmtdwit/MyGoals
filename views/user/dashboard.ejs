@@ -33,7 +33,7 @@
             <div class="card">
                 <div class="card-tabs">
                     <ul class="tabs tabs-fixed-width">
-                        <li class="tab dw-blue-1">
+                        <li class="tab dw-green-1">
                             <a href="#user" class="left-align white-text">
                                 <i class="material-icons">my_location</i> <span class="tab-header"> My Goals </span>
                             </a>
@@ -58,6 +58,7 @@
                 </div>
             </div>
         </div>
+        <% if (subordinate) { %>
         <div class="col l4 s12 m4">
             <h5>&nbsp;</h5><br>
             <div class="card">
@@ -65,7 +66,7 @@
                     <ul class="tabs tabs-fixed-width">
                         <li class="tab dw-blue-1">
                             <a href="#user" class="left-align white-text">
-                                <i class="material-icons">group</i> <span class="tab-header"> Subordinate Goals </span>
+                                <i class="material-icons">group</i> <span class="tab-header"> Subordinates </span>
                             </a>
                         </li>
                     </ul>
@@ -73,15 +74,16 @@
                 <div class="card-content">
                     <div class="row">
                         <div class="col s12 center-align">
-                            <a href="/goal/list" class="btn-floating btn-large waves-effect waves-light">
-                                <i class="material-icons">visibility</i>
+                            <a href="/user/subordinates" class="btn-floating btn-large waves-effect waves-light">
+                                <i class="material-icons">menu</i>
                             </a>
-                            <h5>View</h5>
+                            <h5>List</h5>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
+        <% } %>
     </div>
 </div>
 </main>

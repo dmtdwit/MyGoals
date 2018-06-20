@@ -8,52 +8,71 @@ router.get('/', function (req, res, next) {
 });
 
 router.get('/list', function (req, res, next) {
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102');
+    }
+
     models.Award.findAll({}).then(function (awards) {
         res.render('award/list',{
             title: 'Award List | MyGoals',
             awards: awards,
-            sess: sh.getSession(req)
+            sess: sess
         });
     });
 });
 
+router.get('/get', function(req, res, next) {
+
+    var id = req.query['id'];
+    models.Award.findOne({
+        where: {
+            id: id
+        }
+    }).then(function(result){
+        res.send(result);
+    })
+});
+
 router.get('/create', function (req, res, next) {
-   res.render('award/create',{
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102');
+    }
+    res.render('award/create',{
        title: 'Create Award | MyGoals',
-       sess: sh.getSession(req)
+        sess: sess
    });
 });
 
 
 router.get('/save', function (req, res, next) {
-    var title = req.query['title'];
-    var iconName = req.query['iconName'];
-    var iconColor = req.query['iconColor'];
-    /*models.Award.findOne({
-        where:{
-            title: title
-        }
-    }).then(function (award) {
-        var awardInstance = models.Award;
-        awardInstance.title = title;
-        awardInstance.iconName = iconName;
-        awardInstance.iconColor = iconColor;
-        res.render('award/create',{
-            title: 'Create Award | MyGoals',
-            award: awardInstance,
-            sess: sh.getSession(req)
-        });
-    });*/
-   models.Award.create({
-       title: title,
-       iconName: iconName,
-       iconColor: iconColor
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102');
+    }
+    models.Award.create({
+       title: req.query['title'],
+       iconName: req.query['iconName'],
+       iconColor: req.query['iconColor']
    }).then(function () {
        res.redirect('/award')
    });
 });
 
 router.get('/edit', function (req, res, next) {
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102');
+    }
     var id = req.query['id'];
     console.log("Id is Edit ",id);
     models.Award.findOne({
@@ -64,12 +83,18 @@ router.get('/edit', function (req, res, next) {
         res.render('award/edit.ejs', {
             title: 'Edit Award | My Goals',
             award: award,
-            sess: sh.getSession(req)
+            sess: sess
         });
     });
 });
 
 router.get('/update', function (req, res, next) {
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102');
+    }
     var id = req.query['id'];
     models.Award.find({where:{
         id: id
@@ -87,6 +112,12 @@ router.get('/update', function (req, res, next) {
 });
 
 router.get('/delete', function (req, res, next) {
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102');
+    }
     var id = req.query['id'];
     models.Award.destroy({
         where: {

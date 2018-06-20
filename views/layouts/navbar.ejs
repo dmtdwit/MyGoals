@@ -3,8 +3,16 @@
     <div class="nav-wrapper dw-blue-2">
         <a href="#!" class="brand-logo"><i class="material-icons"></i>My Goals</a>
         <ul class="right hide-on-med-and-down">
-            <li><a href="/<%= sess.role.toLocaleLowerCase() %>/dashboard"><i class="material-icons">view_module</i></a></li>
-            <li><a href="mobile.html"><i class="material-icons">more_vert</i></a></li>
+            <li>
+                <a href="/<%= sess.role.toLocaleLowerCase() %>/dashboard">
+                    <i class="material-icons tooltipped" data-position="bottom" data-tooltip="Dashboard">view_module</i>
+                </a>
+            </li>
+            <li>
+                <a href="/logout">
+                    <i class="material-icons tooltipped" data-position="bottom" data-tooltip="Logout">settings_power</i>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

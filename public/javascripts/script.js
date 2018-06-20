@@ -13,6 +13,42 @@ function displaySample() {
         "<i class='material-icons " +  color +  " circle medium'>" + iconName +  "</i>";
 }
 
+function getAward(id) {
+    var award = document.getElementById('awardIcon'+id);
+
+    $.ajax({
+        url: '/award/get',
+        type: 'GET',
+        data: {
+            id: id
+        },
+        success: function(data) {
+            if (data) {
+                award.innerHTML = "" +
+                    "<i class='material-icons circle small " + data.iconColor +
+                    " tooltipped' data-position='top' data-tooltip='" + data.title + "'>"
+                    + data.iconName + "</i>";
+            } else {
+                award.innerHTML = "None";
+            }
+        }
+    });
+}
+
+function updateProgress(id) {
+
+    var progress = document.getElementById('progress'+id).value;
+
+    $.ajax({
+        url: '/goal/updateProgress',
+        type: 'GET',
+        data: {
+            id: id,
+            progress: progress
+        }
+    });
+}
+
 
 function notify(type,text){
     var n = noty({

@@ -8,10 +8,14 @@ module.exports = {
         sess.role = role;
         sess.userId = id;
 
-        console.log(sess);
         return sess;
     },
     getSession: function(req) {
         return req.session;
+    },
+    checkSession: function (req, res) {
+        if (req.session.name === undefined) {
+            res.redirect('/?e=101'); // Not logged in
+        }
     }
 };

@@ -7,33 +7,46 @@ var sh = require('../service/sessionHandler');
 var formidable = require('formidable');
 
 router.get('/create', function(req, res, next) {
-    models.User.findAll({
-    }).then(function(users) {
-        res.render('user/create', {
-            title: 'Create New User',
-            users: users,
-            sess: sh.getSession(req)
+
+    sh.checkSession(req, res);
+    var sess = sh.getSession(req);
+
+    if (sess.role === "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.User.findAll({}).then(function (users) {
+            res.render('user/create', {
+                title: 'Create New User',
+                users: users,
+                sess: sess
+            });
         });
-    });
+    }
 });
 
 router.get('/edit', function(req, res, next) {
-    var id = req.query['id'];
 
-    models.User.findAll({}).then(function(users) {
-        models.User.findOne({where:{id: id}}).then(function (user) {
-            res.render('user/edit', {
-                title: 'Edit User | My Goals',
-                firstName: user.name.split(" ")[0],
-                lastName: user.name.split(" ")[1],
-                user: user,
-                users: users
+    sh.checkSession(req, res);
+
+        var id = req.query['id'];
+
+        models.User.findAll({}).then(function (users) {
+            models.User.findOne({where: {id: id}}).then(function (user) {
+                res.render('user/edit', {
+                    title: 'Edit User | My Goals',
+                    firstName: user.name.split(" ")[0],
+                    lastName: user.name.split(" ")[1],
+                    user: user,
+                    users: users
+                });
             });
         });
-    });
+
 });
 
 router.post('/save', function(req, res, next) {
+
+    sh.checkSession(req, res);
 
     var category, role;
 
@@ -64,6 +77,8 @@ router.post('/save', function(req, res, next) {
 });
 
 router.get('/profile', function(req, res, next) {
+
+    sh.checkSession(req, res);
 
     var id = req.query['id'];
 
@@ -98,6 +113,8 @@ router.get('/profile', function(req, res, next) {
 
 router.get('/list', function(req, res, next) {
 
+    sh.checkSession(req, res);
+
     models.User.findAll({
         where: {
             RoleId: 2
@@ -111,15 +128,52 @@ router.get('/list', function(req, res, next) {
     });
 });
 
+router.get('/subordinates', function(req, res, next){
+
+    sh.checkSession(req, res);
+
+    var sess= sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.User.findAll({
+            where: {
+                ManagerId: sess.userId
+            }
+        }).then(function (subordinates) {
+            res.render('user/subordinates',{
+                title: 'Subordinates',
+                subordinates: subordinates,
+                sess: sess
+            })
+        });
+    }
+
+});
+
 router.get('/dashboard', function(req, res, next) {
 
-    res.render('user/dashboard',
-        {
-            title: 'Dashboard',
-            sess: sh.getSession(req)
-        }
-    );
+    sh.checkSession(req, res);
 
+    if (sh.getSession(req).role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.User.findOne({
+            where: {
+                ManagerId: sh.getSession(req).userId
+            }
+        }).then(function(result){
+
+            res.render('user/dashboard',
+                {
+                    title: 'Dashboard',
+                    sess: sh.getSession(req),
+                    subordinate: result
+                }
+            );
+        });
+    }
 });
 
 router.get('/profilePicture', function (req, res, next) {

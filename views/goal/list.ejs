@@ -1,0 +1,89 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+
+<body class="bg">
+<br><br>
+<main>
+    <div class="container-fluid">
+        <br><br>
+        <div class="row">
+            <div class="col l12 s12 m12">
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab dw-blue-1">
+                                <a href="#goals" class="left-align white-text">
+                                    <i class="material-icons">my_location</i> <span class="tab-header"> My Goals </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div class="row">
+                            <div class="col l12 s12 m12">
+                                <table>
+                                    <thead>
+                                        <th> S. No. </th>
+                                        <th> Goal </th>
+                                        <th> Set Date </th>
+                                        <th> Status </th>
+                                        <th> Deadline </th>
+                                        <th> </th>
+                                    </thead>
+                                    <tbody>
+                                    <% i = 1 %>
+                                    <% goals.forEach(function (goal) { %>
+                                    <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
+                                        <td> <%= i++ %> </td>
+                                        <td> <%= goal.goal %> </td>
+                                        <td> <%= goal.setDate %> </td>
+                                        <td> <%= goal.goalStatus %> </td>
+                                        <td> <%= goal.deadline %> </td>
+                                        <td> <i class="material-icons tooltipped" data-position="top" data-tooltip="Remarks">visibility</i> </td>
+                                    </tr>
+                                    <% if (goal.goalStatus !== "PENDING") { %>
+                                    <% if (goal.goalStatus !== "REJECTED") { %>
+                                    <tr>
+                                        <td></td>
+                                        <td colspan="2">
+                                            <b> Progress </b>
+                                            <form>
+                                                <p class="range-field" style="margin-left: 5%; margin-right: 5%;">
+                                                    <input type="range" id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
+                                                    <% if (goal.goalStatus === 'COMPLETED') {%> disabled <% }%>
+                                                    onchange="updateProgress(<%= goal.id %>)"/>
+                                                </p>
+                                            </form>
+                                        </td>
+                                        <td colspan="2">
+                                            <% if (goal.goalStatus === "COMPLETED") { %>
+                                            <b> Award </b>
+                                            <span id="awardIcon<%= goal.id %>"></span>
+                                            <script type="text/javascript">
+                                                $(document).ready(function(){
+                                                    getAward(<%= goal.AwardId %>);
+                                                });
+                                            </script>
+                                        </td>
+                                        <td>
+                                            <b> Approved Date </b>
+                                                <%= goal.approvedDate %>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                    <%  }
+                                        }
+                                    }) %>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</main>
+</body>
+<% include ../layouts/footer.ejs %>

@@ -25,7 +25,7 @@ module.exports = function (sequelize, DataTypes) {
             allowNull: false
         },
         progress: {
-            type: DataTypes.FLOAT
+            type: DataTypes.INTEGER
         }
     });
 
