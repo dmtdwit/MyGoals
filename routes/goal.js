@@ -1,7 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var models = require('../models');
-var sh = require('../service/sessionHandler')
+var sh = require('../service/sessionHandler');
+var Sequelize = require('sequelize');
+
+const Op = Sequelize.Op;
 
 router.get('/create', function(req, res, next) {
 
@@ -28,17 +31,64 @@ router.post('/save', function(req, res, next) {
     } else {
         goalType = "ORGANIZATIONAL"
     }
-    models.Goal.create({
-        goal: req.body.goal,
-        goalType: goalType,
-        goalStatus: "PENDING",
-        setDate: new Date(),
-        deadline: req.body.deadline,
-        progress: 0.0
-    }).then(function (result) {
-        return result.setUser(req.body.id);
+
+    models.Goal.count({
+       where: {
+           UserId: req.body.id,
+           goalStatus: {
+               [Op.or]: ["PENDING", "APPROVED"]
+           },
+           goalType: "ORGANIZATIONAL"
+       }
+    }).then(function(goalCountOrg){
+        models.Goal.count({
+            where: {
+                UserId: req.body.id,
+                goalStatus: {
+                    [Op.or]: ["PENDING", "APPROVED"]
+                },
+                goalType: "PERSONAL"
+            }
+        }).then(function(goalCountPers){
+            if (goalType === "PERSONAL" && goalCountPers >= 1) {
+                res.redirect("/user/dashboard?e=111"); // Personal goal count is 1
+            } else if (goalType === "ORGANIZATIONAL" && goalCountOrg >= 2) {
+                res.redirect("/user/dashboard?e=222"); // Personal goal count is 2
+            } else {
+                models.User.findOne({
+                    where: {
+                        id: req.body.id
+                    }
+                }).then(function(user){
+                    if(!user.ManagerId) {
+                        models.Goal.create({
+                            goal: req.body.goal,
+                            goalType: goalType,
+                            goalStatus: "APPROVED",
+                            setDate: new Date(),
+                            deadline: req.body.deadline,
+                            progress: 0.0,
+                            approvedDate: new Date()
+                        }).then(function (result) {
+                            return result.setUser(req.body.id);
+                        });
+                    } else {
+                        models.Goal.create({
+                            goal: req.body.goal,
+                            goalType: goalType,
+                            goalStatus: "PENDING",
+                            setDate: new Date(),
+                            deadline: req.body.deadline,
+                            progress: 0.0
+                        }).then(function (result) {
+                            return result.setUser(req.body.id);
+                        });
+                    }
+                });
+                res.redirect('/user/dashboard?m=101');
+            }
+        })
     });
-    res.redirect('/user/dashboard?m=101')
 });
 
 

@@ -17,8 +17,16 @@ router.get('/dashboard', function(req, res, next) {
                     RoleId: 2
                 }
             }).then(function(userCount){
-                models.Goal.count({}).then(function(goalCount) {
-                    models.Award.count({}).then(function(awardCount) {
+                models.Goal.count({
+                    where: {
+                        goalStatus: "COMPLETED"
+                    }
+                }).then(function(goalCount) {
+                    models.Goal.count({
+                        where: {
+                            AwardId: true
+                        }
+                    }).then(function(awardCount) {
                         res.render('admin/dashboard', {
                             title: 'Dashboard',
                             sess: sess,

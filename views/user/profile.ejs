@@ -37,11 +37,12 @@
             </div>
         </div>
         <div class="row">
-            <% if (subordinates !== []) { %>
+            <% if (subordinates[0]) { %>
             <h6> Subordinates
-            <% for(var i=0; i < subordinates.length; i++){ %>
-            <img src="../profilePictures/<%=subordinates[i].imageName%>" onerror="this.src='../profilePictures/default.jpg'" style="height: 4%; width: 4%; margin-bottom: -1%;" class="tooltipped" data-position="right" data-tooltip="<%=subordinates[i].name %>">
-            <% }}%>
+                <% for(var i=0; i < subordinates.length; i++){ %>
+                <img src="../profilePictures/<%=subordinates[i].imageName%>" onerror="this.src='../profilePictures/default.jpg'" style="height: 4%; width: 4%; margin-bottom: -1%;" class="tooltipped" data-position="right" data-tooltip="<%=subordinates[i].name %>">
+                <% }
+            }%>
             </h6>
         </div>
         <div class="row">
@@ -86,8 +87,7 @@
                                             <td>
                                                 <script type="text/javascript">
                                                     $(document).ready(function(){
-                                                        $('.tooltipped').tooltip();
-                                                        getAward(<%= goal.AwardId %>);
+                                                        getAward(<%= goal.id %>,<%= goal.AwardId %>);
                                                     });
                                                 </script>
                                                 <span id="awardIcon<%= goal.id %>"></span>
@@ -101,7 +101,40 @@
                             </div>
                         </div>
                         <div id="personal">
-
+                            <div class="row">
+                                <div class="col l12 s12 m12">
+                                    <table>
+                                        <thead>
+                                            <th> S. N. </th>
+                                            <th> Goal </th>
+                                            <th> Set Date </th>
+                                            <th> Award </th>
+                                        </thead>
+                                        <tbody>
+                                        <% i = 1
+                                        goals.forEach(function(goal){
+                                        if(goal.goalStatus === "COMPLETED" && goal.goalType === "PERSONAL") {
+                                        %>
+                                        <tr>
+                                            <td> <%= i++ %></td>
+                                            <td> <%= goal.goal %></td>
+                                            <td> <%= goal.setDate %></td>
+                                            <td>
+                                                <span id="awardIcon<%= goal.id %>"></span>
+                                                <script type="text/javascript">
+                                                    $(document).ready(function(){
+                                                        $('.tooltipped').tooltip();
+                                                        getAward(<%= goal.id %>,<%= goal.AwardId %>);
+                                                    });
+                                                </script>
+                                            </td>
+                                        </tr>
+                                        <% }
+                                        }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

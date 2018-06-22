@@ -3,6 +3,7 @@ $(document).ready(function() {
     $('select').formSelect();
     $('.modal').modal();
     $('.tooltipped').tooltip();
+    $('.tabs').tabs();
     $('.datepicker').datepicker({
         minDate: new Date(),
         disableWeekends: true
@@ -27,7 +28,7 @@ function getAwardList(goalId) {
        success: function(result) {
            $.each(result, function(index, data){
                $('#award').append($("<option/>").val(data.id).text(data.title));
-               $('select').material_select();
+               $('select').formSelect();
            });
        }
     });
@@ -48,26 +49,27 @@ function displayAward(id) {
     });
 }
 
-function getAward(id) {
-    var award = document.getElementById('awardIcon'+id);
+function getAward(goalId, awardId) {
 
-    $.ajax({
-        url: '/award/get',
-        type: 'GET',
-        data: {
-            id: id
-        },
-        success: function(data) {
-            if (data) {
-                award.innerHTML = "" +
-                    "<i class='material-icons circle small " + data.iconColor +
-                    " tooltipped' data-position='top' data-tooltip='" + data.title + "'>"
-                    + data.iconName + "</i>";
-            } else {
-                award.innerHTML = "None";
+    var award = document.getElementById('awardIcon'+goalId);
+        $.ajax({
+            url: '/award/get',
+            type: 'GET',
+            data: {
+                id: awardId
+            },
+            success: function (data) {
+                if (data) {
+                    award.innerHTML = "" +
+                        "<i class='material-icons circle small " + data.iconColor +
+                        " tooltipped' data-position='top' data-tooltip='" + data.title + "'>"
+                        + data.iconName + "</i>";
+                } else {
+                    console.log(award);
+                    award.innerHTML = "<span>&nbsp;&nbsp;N/A</span>";
+                }
             }
-        }
-    });
+        });
 }
 
 function updateProgress(id) {
