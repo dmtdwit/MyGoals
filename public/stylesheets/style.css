@@ -71,6 +71,10 @@ main {
     margin-top: -14%;
 }
 
+#profileImage {
+    border-radius: 50%;
+}
+
 @media (max-width: 360px) {
     #mailText {
         margin-top: -17%;

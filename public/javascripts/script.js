@@ -1,8 +1,12 @@
 $(document).ready(function() {
     $('.bordered').DataTable();
-    $('select').material_select();
+    $('select').formSelect();
     $('.modal').modal();
     $('.tooltipped').tooltip();
+    $('.datepicker').datepicker({
+        minDate: new Date(),
+        disableWeekends: true
+    });
 });
 
 function displaySample() {
@@ -11,6 +15,37 @@ function displaySample() {
 
     document.getElementById('sample').innerHTML = "" +
         "<i class='material-icons " +  color +  " circle medium'>" + iconName +  "</i>";
+}
+
+function getAwardList(goalId) {
+
+    document.getElementById('goalId').setAttribute('value', goalId);
+
+    $.ajax({
+       url: "/award/getAll",
+       type: 'POST',
+       success: function(result) {
+           $.each(result, function(index, data){
+               $('#award').append($("<option/>").val(data.id).text(data.title));
+               $('select').material_select();
+           });
+       }
+    });
+}
+
+function displayAward(id) {
+
+    $.ajax({
+       url: '/award/get',
+        type: 'GET',
+        data: {
+           id: id
+        },
+        success: function(result){
+            document.getElementById('awardIcon').innerHTML = "" +
+                "<i class='material-icons " +  result.iconColor +  " circle small'>" + result.iconName +  "</i>";
+        }
+    });
 }
 
 function getAward(id) {

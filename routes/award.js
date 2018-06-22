@@ -36,6 +36,13 @@ router.get('/get', function(req, res, next) {
     })
 });
 
+router.post('/getAll', function(req, res, next) {
+
+    models.Award.findAll({}).then(function(result){
+        res.send(result);
+    });
+});
+
 router.get('/create', function (req, res, next) {
     sh.checkSession(req, res);
     var sess = sh.getSession(req);

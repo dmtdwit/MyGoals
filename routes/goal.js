@@ -41,6 +41,21 @@ router.post('/save', function(req, res, next) {
     res.redirect('/user/dashboard?m=101')
 });
 
+
+router.post('/award', function(req, res, next) {
+
+    models.Goal.find({where:{
+        id: req.body.goalId
+    }}).then(function(goal) {
+        if(goal){
+            goal.updateAttributes({
+                AwardId: req.body.award
+            });
+        }
+        res.redirect('/goal/sub-list?id=' + req.body.userId);
+    });
+});
+
 router.get('/list', function(req, res, next) {
 
     sh.checkSession(req, res);
@@ -92,6 +107,7 @@ router.get('/action', function(req, res, next) {
 
     var id = req.query['g'];
     var action = req.query['q'];
+    var user = req.query['u'];
     var sess = sh.getSession(req);
 
     if (sess.role !== "USER") {
@@ -105,9 +121,9 @@ router.get('/action', function(req, res, next) {
             if(goal){
                 goal.updateAttributes({
                     goalStatus: action,
-                    setDate: new Date()
+                    approvedDate: new Date()
                 }).then(function () {
-                    res.redirect('/user/dashboard')
+                    res.redirect('/goal/sub-list?id=' + user);
                 });
             }
         });

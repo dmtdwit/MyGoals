@@ -6,6 +6,25 @@
         background-color: #0F5288 !important;
     }
 </style>
+<!-- Modal Structure -->
+<div id="awardModal" class="modal">
+    <form action="/goal/award" method="post">
+        <input type="hidden" id="goalId" name="goalId">
+        <input type="hidden" id="userId" name="userId" value="<%= subordinate.id %>">
+        <div class="modal-content">
+            <h4>Award</h4>
+                <select id="award" name="award" onchange="displayAward(this.value)">
+                    <option> Select an award </option>
+                </select><br>
+            <div id="awardIcon" class="center-align"></div>
+        </div>
+        <div class="modal-footer">
+            <button href="#!" class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text align-center">
+                Award
+            </button>
+        </div>
+    </form>
+</div>
 <body class="bg">
 <br><br>
 <main>
@@ -56,11 +75,11 @@
                                             <td> <%= goal.deadline %></td>
                                             <td>
                                                 <% if (goal.goalStatus === "PENDING") {%>
-                                                <a href="action?g=<%= goal.id %>&q=APPROVED" class="btn btn-floating">
+                                                <a href="action?g=<%= goal.id %>&q=APPROVED&u=<%= subordinate.id %>" class="btn btn-floating">
                                                     <i class="material-icons dw-green-1 tooltipped"
                                                        data-position="top" data-tooltip="Approve">check</i>
                                                 </a>
-                                                <a href="action?g=<%= goal.id %>&q=REJECTED" class="btn btn-floating">
+                                                <a href="action?g=<%= goal.id %>&q=REJECTED&u=<%= subordinate.id %>" class="btn btn-floating">
                                                     <i class="material-icons red darken-1 tooltipped"
                                                        data-position="top" data-tooltip="Reject">clear</i>
                                                 </a>
@@ -82,9 +101,19 @@
                                                 </p>
                                             </td>
                                             <td>
-                                                <% if (goal.goalStatus === "COMPLETED") { %>
-                                                    <a href="#">AWARD</a>
-                                                <% } else { %>
+                                                <% if (goal.goalStatus === "COMPLETED") {
+                                                    if(goal.AwardId) { %>
+                                                        <span id="awardIcon<%= goal.id %>"></span>
+                                                        <script type="text/javascript">
+                                                            $(document).ready(function(){
+                                                                getAward(<%= goal.AwardId %>);
+                                                            });
+                                                        </script>
+                                                <% } else {
+                                                %>
+                                                <a class="waves-effect waves-light btn modal-trigger dw-green-1" href="#awardModal" onclick="getAwardList(<%= goal.id %>)">Award</a>
+                                                <% }
+                                                } else { %>
                                                     N/A
                                                 <% } %>
                                             </td>
