@@ -86,26 +86,31 @@ router.get('/profile', function(req, res, next) {
         where: {
             id: id
         }
-    }).then(function(result){
+    }).then(function (user) {
         models.User.findOne({
             where: {
-                id: result.ManagerId
+                id: user.ManagerId
             }
-        }).then(function(manager){
+        }).then(function (manager) {
             models.User.findAll({
-                where:{
-                    managerId: id
+                where: {
+                    managerId: user.id
                 }
             }).then(function (subordinates) {
-                res.render('user/profile',
-                    {
-                        title: result.name + ' | User Profile',
-                        user: result,
+                models.Goal.findAll({
+                    where: {
+                        UserId: user.id
+                    }
+                }).then(function (goals) {
+                    res.render('user/profile', {
+                        title: user.name + ' | User Profile',
+                        user: user,
                         manager: manager,
                         subordinates: subordinates,
+                        goals: goals,
                         sess: sh.getSession(req)
-                    }
-                );
+                    });
+                });
             });
         });
     });
@@ -186,17 +191,15 @@ router.get('/profilePicture', function (req, res, next) {
 });
 
 router.post('/savePP', function (req, res, next) {
-    console.log("We are in savePP");
     var sess = sh.getSession(req);
     var form = new formidable.IncomingForm();
-    console.log("form is ", form);
     form.parse(req, function (err, fields, files) {
         var oldpath = files.profilePicture.path;
         oldFilename = files.profilePicture.name;
         arrayOfFilename = oldFilename.split('.');
         fileExt = arrayOfFilename[arrayOfFilename.length-1];
         newFilename = sess.userId+'.'+fileExt;
-        var newpath = '../public/profilePictures/' + newFilename;
+        var newpath = '../MyGoals/public/profilePictures/' + newFilename;
         fs.rename(oldpath, newpath, function (err) {
             if (err) throw err;
             models.User.findOne({

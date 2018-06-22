@@ -56,7 +56,7 @@
 
                                                     if(user.RoleId == 2) {
                                                 %>
-                                                <option data-icon="../images/user.png" class="left circle" value="<%= user.id %>">
+                                                <option data-icon="../profilePictures/<%=user.imageName%>" onerror="this.src='../profilePictures/default.jpg'" class="left circle" value="<%= user.id %>">
                                                     <%= user.name %>
                                                 </option>
                                                 <% }

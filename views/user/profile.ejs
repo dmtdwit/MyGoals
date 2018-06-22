@@ -1,5 +1,10 @@
 <% include ../layouts/header.ejs %>
 <% include ../layouts/navbar.ejs %>
+<style>
+    .tabs .indicator {
+        background-color: #0F5288 !important;
+    }
+</style>
 <body class="bg">
 <br><br>
 <main>
@@ -14,34 +19,93 @@
         </div>
         <div class="row">
             <div class="col l12 m12 s12 center-align">
-                <div class="conatiner">
-                    <a><img src="../profilePictures/<%=user.imageName%>" onerror="this.src='../profilePictures/default.jpg'" class="circle responsive-img" style="height: 30%; width: 30%;"></a>
-                    <div class="overlay">
-                        <a href="./profilePicture" class="icon">
-                            <i class="material-icons prefix">edit</i>
-                        </a>
+                <div class="container">
+                    <div class="row">
+                        <div class="col l4 s6 m4 offset-l4 offset-s3 offset-m4">
+                        <a><img src="../profilePictures/<%=user.imageName%>" onerror="this.src='../profilePictures/default.jpg'" class="circle responsive-img" id="profileImage"></a>
+                            <div class="overlay">
+                                <a href="./profilePicture" class="icon">
+                                    <i class="material-icons circle grey small white-text tooltipped"
+                                       data-position="right" data-tooltip="Upload new profile picture"
+                                       style="margin-left: 14%;">edit</i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
                 <h4> <%= user.name %> </h4>
             </div>
         </div>
         <div class="row">
-            <% if (subordinates) { %>
+            <% if (subordinates !== []) { %>
             <h6> Subordinates
-            <% for(var i=0; i < subordinates.length; i++){
-            %>
+            <% for(var i=0; i < subordinates.length; i++){ %>
             <img src="../profilePictures/<%=subordinates[i].imageName%>" onerror="this.src='../profilePictures/default.jpg'" style="height: 4%; width: 4%; margin-bottom: -1%;" class="tooltipped" data-position="right" data-tooltip="<%=subordinates[i].name %>">
             <% }}%>
             </h6>
         </div>
         <div class="row">
-            <h6>
-                Achievements
-            </h6>
-        </div>
-        <div class="row">
-            <h4 class="center-align"> All Goals </h4>
+            <h4 class="center-align">All Goals</h4>
             <hr>
+            <div class="col l12 s12 m12">
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab">
+                                <a href="#organizational" class="center-align text-dw-blue-1">
+                                    <span class="tab-header"> Organizational </span>
+                                </a>
+                            </li>
+                            <li class="tab">
+                                <a href="#personal" class="center-align text-dw-blue-1">
+                                    <span class="tab-header"> Personal </span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div id="organizational">
+                            <div class="row">
+                                <div class="col l12 s12 m12">
+                                    <table>
+                                        <thead>
+                                        <th> S. N. </th>
+                                        <th> Goal </th>
+                                        <th> Set Date </th>
+                                        <th> Award </th>
+                                        </thead>
+                                        <tbody>
+                                        <% i = 1
+                                        goals.forEach(function(goal){
+                                        if(goal.goalStatus === "COMPLETED" && goal.goalType === "ORGANIZATIONAL") {
+                                        %>
+                                        <tr>
+                                            <td> <%= i++ %></td>
+                                            <td> <%= goal.goal %></td>
+                                            <td> <%= goal.setDate %></td>
+                                            <td>
+                                                <script type="text/javascript">
+                                                    $(document).ready(function(){
+                                                        $('.tooltipped').tooltip();
+                                                        getAward(<%= goal.AwardId %>);
+                                                    });
+                                                </script>
+                                                <span id="awardIcon<%= goal.id %>"></span>
+                                            </td>
+                                        </tr>
+                                        <% }
+                                        }) %>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="personal">
+
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </main>
