@@ -23,9 +23,9 @@
                         <div id="edit">
                             <div class="row">
 
-                                <form class="col s12" action="save" method="POST" autocomplete="off">
+                                <form class="col s12" action="update" method="POST" autocomplete="off" onsubmit="return validateUser();">
                                     <div class="row">
-
+                                        <input type="hidden" value="<%=user.id%>" name="id" id="id"/>
                                         <div class="input-field col l6 m6 s12">
                                             <i class="material-icons prefix">account_circle</i>
                                             <input id="firstName" name="firstName" type="text" value="<%= firstName %>" class="validate">
@@ -53,7 +53,7 @@
                                             <select id="manager" name="manager" class="icons">
                                                 <option data-icon="../images/user.png" class="left circle" selected> None </option>
                                                 <% users.forEach(function(manager){ %>
-                                                <option data-icon="../images/user.png" class="left circle" value="<%= manager.email %>">
+                                                <option data-icon="../images/user.png" class="left circle" value="<%= manager.id %>" <% if(manager.id == managerId){ %> selected="true" <%}%>>
                                                     <%= manager.name %>
                                                 </option>
                                                 <% })%>

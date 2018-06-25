@@ -23,13 +23,13 @@
                         <div id="create">
                             <div class="row">
 
-                                <form class="col s12" action="save" method="POST" autocomplete="off">
+                                <form class="col s12" action="save" method="POST" autocomplete="off" onsubmit="return validateGoals();">
                                     <div class="row">
 
                                         <div class="input-field col l12 m12 s12">
                                             <i class="material-icons prefix">my_location</i>
                                             <input type="hidden" name="id" value="<%= sess.userId %>">
-                                            <input id="goal" name="goal" type="text" class="validate" required>
+                                            <input id="goal" name="goal" type="text" class="validate">
                                             <label for="goal">Goal</label>
                                         </div>
 
@@ -47,7 +47,7 @@
 
                                         <div class="input-field col l6 m6 s12">
                                             <i class="material-icons prefix">date_range</i>
-                                            <input id="deadline" name="deadline" type="text" class="datepicker" required>
+                                            <input id="deadline" name="deadline" type="text" class="datepicker">
                                             <label for="deadline">Deadline</label>
                                         </div>
 

@@ -23,7 +23,7 @@
                         <div id="create">
                             <div class="row">
 
-                                <form class="col s12" action="save" method="POST" autocomplete="off">
+                                <form class="col s12" action="save" method="POST" autocomplete="off" onsubmit="return validateUser();">
                                     <div class="row">
 
                                         <div class="input-field col l6 m6 s12">
@@ -53,7 +53,6 @@
                                             <select id="manager" name="manager" class="icons">
                                                 <option data-icon="../images/user.png" class="left circle" selected> None </option>
                                                 <% users.forEach(function(user){
-
                                                     if(user.RoleId == 2) {
                                                 %>
                                                 <option data-icon="../profilePictures/<%=user.imageName%>" onerror="this.src='../profilePictures/default.jpg'" class="left circle" value="<%= user.id %>">

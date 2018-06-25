@@ -53,7 +53,7 @@ router.post('/save', function(req, res, next) {
             if (goalType === "PERSONAL" && goalCountPers >= 1) {
                 res.redirect("/user/dashboard?e=111"); // Personal goal count is 1
             } else if (goalType === "ORGANIZATIONAL" && goalCountOrg >= 2) {
-                res.redirect("/user/dashboard?e=222"); // Personal goal count is 2
+                res.redirect("/user/dashboard?e=222"); // Organizational goal count is 2
             } else {
                 models.User.findOne({
                     where: {

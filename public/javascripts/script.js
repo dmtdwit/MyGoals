@@ -168,4 +168,20 @@ function validateProfilePicture() {
     }
 }
 
+function validateGoals() {
+    var goal = document.getElementById('goal').value.trim();
+    var deadline = document.getElementById('deadline').value.trim();
+    if(checkEmpty("Goal ", goal)) return false;
+    if(checkEmpty("Deadline ", deadline)) return false;
+    else return true;
+}
 
+function validateUser() {
+    var firstname = document.getElementById('firstName').value.trim();
+    var lastname = document.getElementById('lastName').value.trim();
+    var email = document.getElementById('email').value.trim();
+    if(checkEmpty("First Name ", firstname)) return false;
+    if(checkEmpty("Last Name ", lastname)) return false;
+    if(checkEmpty("Email ", email)) return false;
+    else return true;
+}

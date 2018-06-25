@@ -32,17 +32,68 @@ router.get('/edit', function(req, res, next) {
 
         models.User.findAll({}).then(function (users) {
             models.User.findOne({where: {id: id}}).then(function (user) {
-                res.render('user/edit', {
-                    title: 'Edit User | My Goals',
-                    firstName: user.name.split(" ")[0],
-                    lastName: user.name.split(" ")[1],
-                    user: user,
-                    users: users
+                models.User.findOne({
+                    where:{
+                        id: user.ManagerId
+                    }
+                }).then(function (manager) {
+                    res.render('user/edit', {
+                        title: 'Edit User | My Goals',
+                        firstName: user.name.split(" ")[0],
+                        lastName: user.name.split(" ")[1],
+                        user: user,
+                        users: users,
+                        managerId: manager.id,
+                        sess: sh.getSession(req)
+                    });
                 });
             });
         });
 
 });
+
+
+router.post('/update', function(req, res, next) {
+
+    sh.checkSession(req, res);
+    var category, role;
+    var id = req.body.id;
+    console.log("Id of user is ", id);
+
+    models.User.findOne({
+        where:{
+            id: id
+        }
+    }).then(function (user) {
+        if(!req.body.role) {
+            role = 2
+        } else {
+            role = 1
+        }
+        if(!req.body.category) {
+            category = "EMPLOYEE"
+        } else {
+            category = "STUDENT"
+        }
+        console.log("User is ", user);
+        if(user){
+            user.updateAttributes({
+                name: req.body.firstName + " " + req.body.lastName,
+                password: req.body.email,
+                email: req.body.email,
+                category: category
+            }).then(function(result){
+                return result.setRole(role);
+            }).then(function(resultTwo){
+                return resultTwo.setManager(req.body.manager);
+            });
+            res.redirect("/admin/dashboard");
+        }else {
+            res.redirect("/admin/dashboard?e=155") // user not found for updating information
+        }
+    });
+});
+
 
 router.post('/save', function(req, res, next) {
 
@@ -199,23 +250,35 @@ router.post('/savePP', function (req, res, next) {
         arrayOfFilename = oldFilename.split('.');
         fileExt = arrayOfFilename[arrayOfFilename.length-1];
         newFilename = sess.userId+'.'+fileExt;
-        var newpath = '../MyGoals/public/profilePictures/' + newFilename;
-        fs.rename(oldpath, newpath, function (err) {
-            if (err) throw err;
+        var newpath = '../public/profilePictures/' + newFilename;
+        if(oldFilename!==''&&oldFilename!==null){
+            fs.rename(oldpath, newpath, function (err) {
+                if (err) throw err;
+                models.User.findOne({
+                    where:{
+                        id: sess.userId
+                    }
+                }).then(function (user) {
+                    if(user){
+                        user.updateAttributes({
+                            imageName: newFilename
+                        }).then(function () {
+                            res.redirect('./profile?id='+sess.userId)
+                        });
+                    }
+                });
+            });
+        }else{
             models.User.findOne({
                 where:{
                     id: sess.userId
                 }
             }).then(function (user) {
                 if(user){
-                    user.updateAttributes({
-                        imageName: newFilename
-                    }).then(function () {
-                        res.redirect('./profile?id='+sess.userId)
-                    });
+                    res.redirect('./profile?id='+sess.userId)
                 }
             });
-        });
+        }
     });
 });
 
