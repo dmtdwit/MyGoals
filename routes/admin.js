@@ -1,11 +1,11 @@
-var express = require('express');
-var router = express.Router();
-var models = require('../models');
-var sh = require('../service/sessionHandler');
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const sh = require('../service/sessionHandler');
 
 
 router.get('/dashboard', function(req, res, next) {
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     sh.checkSession(req, res);
 

@@ -6,6 +6,22 @@
         background-color: #0F5288 !important;
     }
 </style>
+<div id="logModal" class="modal" style="z-index: 10000; margin-top: 10%;">
+    <form action="log" method="post">
+        <div class="modal-content">
+            <h4>Progress Update Log</h4>
+                <input type="hidden" id="progressGoalId" name="progressGoalId">
+                <input type="hidden" id="progressValue">
+                <textarea class="materialize-textarea" id="progressRemark" name="progressRemark">
+                </textarea>
+                <label for="progressRemark">Remark</label>
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="modal-close waves-effect waves-green btn-flat red darken-1 white-text" onclick="$('#logModal').hide();">Cancel</a>
+            <button class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text" onclick="updateProgress()">Update</button>
+        </div>
+    </form>
+</div>
 <body class="bg">
 <br><br>
 <main>
@@ -57,16 +73,22 @@
                                         <% if (goal.goalStatus !== "PENDING") { %>
                                         <% if (goal.goalStatus !== "REJECTED") { %>
                                         <tr>
-                                            <td></td>
                                             <td colspan="2">
                                                 <b> Progress </b>
                                                 <form>
                                                     <p class="range-field" style="margin-left: 5%; margin-right: 5%;">
-                                                        <input type="range" id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
+                                                        <input type="range" class="tooltipped" data-position="right" data-tooltip="<%= goal.progress %>%"
+                                                               id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
                                                                 <% if (goal.goalStatus === 'COMPLETED') {%> disabled <% }%>
-                                                               onchange="updateProgress(<%= goal.id %>)"/>
+                                                               onchange="logModal(<%= goal.id %>)"/>
                                                     </p>
                                                 </form>
+                                            </td>
+                                            <td class="center-align">
+                                                <a href="/goal/view-log?id=<%= goal.id %>"
+                                                   class="btn btn-flat dw-green-1">
+                                                    View Log
+                                                </a>
                                             </td>
                                             <td colspan="2">
                                                 <% if (goal.goalStatus === "COMPLETED") { %>
@@ -124,16 +146,22 @@
                                         <% if (goal.goalStatus !== "PENDING") { %>
                                         <% if (goal.goalStatus !== "REJECTED") { %>
                                         <tr>
-                                            <td></td>
                                             <td colspan="2">
                                                 <b> Progress </b>
                                                 <form>
                                                     <p class="range-field" style="margin-left: 5%; margin-right: 5%;">
-                                                        <input type="range" id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
+                                                        <input type="range" class="tooltipped" data-position="right" data-tooltip="<%= goal.progress %>"
+                                                               id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
                                                                 <% if (goal.goalStatus === 'COMPLETED') {%> disabled <% }%>
-                                                               onchange="updateProgress(<%= goal.id %>)"/>
+                                                               onchange="logModal(<%= goal.id %>)"/>
                                                     </p>
                                                 </form>
+                                            </td>
+                                            <td class="right-align">
+                                                <a href="/goal/log/view?id=<%= goal.id %>"
+                                                   class="btn btn-flat dw-green-1">
+                                                    View Log
+                                                </a>
                                             </td>
                                             <td colspan="2">
                                                 <% if (goal.goalStatus === "COMPLETED") { %>

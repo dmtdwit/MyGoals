@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes) {
 
-    var Reply = sequelize.define('Reply', {
+    let Reply = sequelize.define('Reply', {
     });
 
     Reply.associate = function(models) {

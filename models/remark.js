@@ -1,6 +1,6 @@
 module.exports = function(sequelize, DataTypes){
 
-    var Remark = sequelize.define('Remark', {
+    let Remark = sequelize.define('Remark', {
 
         remark: {
             type: DataTypes.STRING,

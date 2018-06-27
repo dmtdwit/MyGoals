@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var models = require('../models');
-var fs = require('fs');
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const fs = require('fs');
 // var md5 = require('md5');
 var sh = require('../service/sessionHandler');
 var formidable = require('formidable');
@@ -15,11 +15,13 @@ var transporter = nodemailer.createTransport({
     }
 });
 
+const sh = require('../service/sessionHandler');
+const formidable = require('formidable');
 
 router.get('/create', function(req, res, next) {
 
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -38,7 +40,7 @@ router.get('/edit', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-        var id = req.query['id'];
+        let id = req.query['id'];
 
         models.User.findAll({}).then(function (users) {
             models.User.findOne({where: {id: id}}).then(function (user) {
@@ -127,7 +129,7 @@ router.post('/save', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-    var category, role;
+    let category, role;
 
     if(!req.body.role) {
         role = 2
@@ -185,7 +187,7 @@ router.get('/profile', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-    var id = req.query['id'];
+    let id = req.query['id'];
     var c = req.query['e'];
     var message, type;
 
@@ -313,7 +315,7 @@ router.get('/subordinates', function(req, res, next){
 
     sh.checkSession(req, res);
 
-    var sess= sh.getSession(req);
+    let sess= sh.getSession(req);
 
     if (sess.role !== "USER") {
         return res.redirect('/login?e=403'); // Not authorized
@@ -367,10 +369,10 @@ router.get('/profilePicture', function (req, res, next) {
 });
 
 router.post('/savePP', function (req, res, next) {
-    var sess = sh.getSession(req);
-    var form = new formidable.IncomingForm();
+    let sess = sh.getSession(req);
+    let form = new formidable.IncomingForm();
     form.parse(req, function (err, fields, files) {
-        var oldpath = files.profilePicture.path;
+        let oldpath = files.profilePicture.path;
         oldFilename = files.profilePicture.name;
         arrayOfFilename = oldFilename.split('.');
         fileExt = arrayOfFilename[arrayOfFilename.length-1];

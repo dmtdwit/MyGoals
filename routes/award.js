@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var models = require('../models');
-var sh = require('../service/sessionHandler');
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const sh = require('../service/sessionHandler');
 
 router.get('/', function (req, res, next) {
     res.redirect('/award/list');
@@ -9,7 +9,7 @@ router.get('/', function (req, res, next) {
 
 router.get('/list', function (req, res, next) {
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/login?e=403');
@@ -26,7 +26,7 @@ router.get('/list', function (req, res, next) {
 
 router.get('/get', function(req, res, next) {
 
-    var id = req.query['id'];
+    let id = req.query['id'];
     models.Award.findOne({
         where: {
             id: id
@@ -45,7 +45,7 @@ router.post('/getAll', function(req, res, next) {
 
 router.get('/create', function (req, res, next) {
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/?e=102');
@@ -59,7 +59,7 @@ router.get('/create', function (req, res, next) {
 
 router.get('/save', function (req, res, next) {
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/?e=102');
@@ -75,12 +75,12 @@ router.get('/save', function (req, res, next) {
 
 router.get('/edit', function (req, res, next) {
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/?e=102');
     }
-    var id = req.query['id'];
+    let id = req.query['id'];
     console.log("Id is Edit ",id);
     models.Award.findOne({
         where:{
@@ -97,12 +97,12 @@ router.get('/edit', function (req, res, next) {
 
 router.get('/update', function (req, res, next) {
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/?e=102');
     }
-    var id = req.query['id'];
+    let id = req.query['id'];
     models.Award.find({where:{
         id: id
     }}).then(function(award) {
@@ -120,12 +120,12 @@ router.get('/update', function (req, res, next) {
 
 router.get('/delete', function (req, res, next) {
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role === "USER") {
         res.redirect('/?e=102');
     }
-    var id = req.query['id'];
+    let id = req.query['id'];
     models.Award.destroy({
         where: {
             id: id

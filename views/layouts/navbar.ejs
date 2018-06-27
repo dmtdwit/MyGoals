@@ -4,6 +4,11 @@
         <a href="#!" class="brand-logo"><i class="material-icons"></i>My Goals</a>
         <ul class="right hide-on-med-and-down">
             <li>
+                <a>
+                    <i class="material-icons tooltipped" data-position="bottom" data-tooltip="Go Back" onclick="window.history.back();">reply_all</i>
+                </a>
+            </li>
+            <li>
                 <a href="/<%= sess.role.toLocaleLowerCase() %>/dashboard">
                     <i class="material-icons tooltipped" data-position="bottom" data-tooltip="Dashboard">view_module</i>
                 </a>
