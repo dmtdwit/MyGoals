@@ -11,8 +11,8 @@ $(document).ready(function() {
 });
 
 function displaySample() {
-    var iconName = document.getElementById('iconName').value;
-    var color = document.getElementById('iconColor').value;
+    const iconName = document.getElementById('iconName').value;
+    const color = document.getElementById('iconColor').value;
 
     document.getElementById('sample').innerHTML = "" +
         "<i class='material-icons " +  color +  " circle medium'>" + iconName +  "</i>";
@@ -51,7 +51,7 @@ function displayAward(id) {
 
 function getAward(goalId, awardId) {
 
-    var award = document.getElementById('awardIcon'+goalId);
+    const award = document.getElementById('awardIcon'+goalId);
         $.ajax({
             url: '/award/get',
             type: 'GET',
@@ -65,16 +65,26 @@ function getAward(goalId, awardId) {
                         " tooltipped' data-position='top' data-tooltip='" + data.title + "'>"
                         + data.iconName + "</i>";
                 } else {
-                    console.log(award);
                     award.innerHTML = "<span>&nbsp;&nbsp;N/A</span>";
                 }
             }
         });
 }
 
-function updateProgress(id) {
+function logModal(goalId) {
 
-    var progress = document.getElementById('progress'+id).value;
+    $('#logModal').show();
+
+    document.getElementById('progressGoalId').setAttribute('value', goalId);
+    const progress = document.getElementById('progress'+goalId).value;
+    document.getElementById('progressValue').setAttribute('value', progress);
+}
+
+function updateProgress() {
+
+    const id = document.getElementById('progressGoalId').value;
+    const progress = document.getElementById('progressValue').value;
+    const remark = document.getElementById('progressRemark').value;
 
     $.ajax({
         url: '/goal/updateProgress',
@@ -88,7 +98,7 @@ function updateProgress(id) {
 
 
 function notify(type,text){
-    var n = noty({
+    let n = noty({
         layout: 'topRight',
         theme: 'relax',
         type: type,
@@ -119,8 +129,8 @@ function checkEmpty(fieldname,fieldvalue){
 }
 
 function validatePhotoFormat(fileName){
-    var idxDot = fileName.lastIndexOf(".") + 1;
-    var extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
+    let idxDot = fileName.lastIndexOf(".") + 1;
+    let extFile = fileName.substr(idxDot, fileName.length).toLowerCase();
     if (extFile==="jpg" || extFile==="jpeg" || extFile==="png"){
         return true;
     }else{
@@ -132,8 +142,8 @@ function validatePhotoFormat(fileName){
 
 
 function validateLoginForm() {
-    var email = document.getElementById('email').value.trim();
-    var password = document.getElementById('password').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value.trim();
     if(checkEmpty("Email",email)){
         return false;
     }
@@ -146,9 +156,9 @@ function validateLoginForm() {
 }
 
 function validateAward() {
-    var title = document.getElementById('title').value.trim();
-    var iconName = document.getElementById('iconName').value.trim();
-    var iconColor = document.getElementById('iconColor').value.trim();
+    const title = document.getElementById('title').value.trim();
+    const iconName = document.getElementById('iconName').value.trim();
+    const iconColor = document.getElementById('iconColor').value.trim();
     if(checkEmpty("Award Title", title)) return false;
     if(checkEmpty("IconName", iconName)) return false;
     if(checkEmpty("IconColor", iconColor)) return false;
@@ -156,7 +166,7 @@ function validateAward() {
 }
 
 function validateProfilePicture() {
-    var profilePicture = document.getElementById('profilePicture').value.trim();
+    const profilePicture = document.getElementById('profilePicture').value.trim();
     if(profilePicture===''||profilePicture===null){
         return true;
     }else{

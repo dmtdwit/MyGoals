@@ -1,6 +1,6 @@
 module.exports = function (sequelize, DataTypes) {
 
-    var Goal = sequelize.define('Goal', {
+    let Goal = sequelize.define('Goal', {
         goalType: {
             type: DataTypes.ENUM(['PERSONAL', 'ORGANIZATIONAL']),
             allowNull: false

@@ -1,7 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var models = require('../models');
-var sh = require('../service/sessionHandler');
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const sh = require('../service/sessionHandler');
 // var md5 = require('md5');
 
 router.get('/', function (req, res, next) {
@@ -10,8 +10,8 @@ router.get('/', function (req, res, next) {
 
 /* GET home page. */
 router.get('/login', function(req, res, next) {
-    var c = req.query['e'];
-    var message, type;
+    let c = req.query['e'];
+    let message, type;
 
     switch(c) {
         case "101":

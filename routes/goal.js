@@ -1,15 +1,15 @@
-var express = require('express');
-var router = express.Router();
-var models = require('../models');
-var sh = require('../service/sessionHandler');
-var Sequelize = require('sequelize');
+const express = require('express');
+const router = express.Router();
+const models = require('../models');
+const sh = require('../service/sessionHandler');
+const Sequelize = require('sequelize');
 
 const Op = Sequelize.Op;
 
 router.get('/create', function(req, res, next) {
 
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
 
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -24,7 +24,7 @@ router.get('/create', function(req, res, next) {
 
 router.post('/save', function(req, res, next) {
 
-    var goalType;
+    let goalType;
 
     if(!req.body.goalType) {
         goalType = "PERSONAL"
@@ -91,6 +91,45 @@ router.post('/save', function(req, res, next) {
     });
 });
 
+router.post('/log', function(req, res, next){
+
+    models.Log.create({
+        remark: req.body.progressRemark
+    }).then(function (result) {
+        return result.setGoal(req.body.progressGoalId);
+    }).then(function(){
+        res.redirect("/goal/list");
+    })
+});
+
+router.get('/view-log', function(req, res, next) {
+
+    sh.checkSession(req, res);
+    let sess = sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.Goal.findOne({
+            where: {
+                id: req.query['id']
+            }
+        }).then(function(goal){
+            models.Log.findAll({
+                where: {
+                    GoalId: req.query['id']
+                }
+            }).then(function (logs) {
+                res.render('goal/log', {
+                    title: 'Log | ' + sess.name,
+                    goal: goal,
+                    logs: logs,
+                    sess: sess
+                });
+            });
+        });
+    }
+});
 
 router.post('/award', function(req, res, next) {
 
@@ -109,7 +148,7 @@ router.post('/award', function(req, res, next) {
 router.get('/list', function(req, res, next) {
 
     sh.checkSession(req, res);
-    var sess = sh.getSession(req);
+    let sess = sh.getSession(req);
     
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -130,8 +169,8 @@ router.get('/list', function(req, res, next) {
 
 router.get('/updateProgress', function(req, res, next){
 
-    var id = req.query['id'];
-    var progress = req.query['progress'];
+    let id = req.query['id'];
+    let progress = req.query['progress'];
 
     models.Goal.find({where:{
         id: id
@@ -155,10 +194,10 @@ router.get('/action', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-    var id = req.query['g'];
-    var action = req.query['q'];
-    var user = req.query['u'];
-    var sess = sh.getSession(req);
+    let id = req.query['g'];
+    let action = req.query['q'];
+    let user = req.query['u'];
+    let sess = sh.getSession(req);
 
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -184,8 +223,8 @@ router.get('/sub-list', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-    var id = req.query['id'];
-    var sess = sh.getSession(req);
+    let id = req.query['id'];
+    let sess = sh.getSession(req);
     
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
