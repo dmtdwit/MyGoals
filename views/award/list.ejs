@@ -38,5 +38,13 @@
     </div>
 </main>
 </body>
+<script>
+    var message = '<%=message%>'
+    var messageType = '<%=messageType%>'
+    if(message===''||message===null||typeof message==='undefined'){
 
+    }else{
+        displayMessage(message, messageType, 4000)
+    }
+</script>
 <% include ../layouts/footer.ejs %>

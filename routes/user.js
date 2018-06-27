@@ -3,9 +3,9 @@ const router = express.Router();
 const models = require('../models');
 const fs = require('fs');
 // var md5 = require('md5');
-var sh = require('../service/sessionHandler');
-var formidable = require('formidable');
 var nodemailer = require('nodemailer');
+const sh = require('../service/sessionHandler');
+const formidable = require('formidable');
 
 var transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -15,8 +15,6 @@ var transporter = nodemailer.createTransport({
     }
 });
 
-const sh = require('../service/sessionHandler');
-const formidable = require('formidable');
 
 router.get('/create', function(req, res, next) {
 
@@ -197,7 +195,7 @@ router.get('/profile', function(req, res, next) {
             type = "success";
             break;
         case "205":
-            message = "No any profile picture selected.";
+            message = "No new profile picture selected.";
             type = "warning";
             break;
         default:
@@ -232,7 +230,7 @@ router.get('/profile', function(req, res, next) {
                         goals: goals,
                         sess: sh.getSession(req),
                         message: message,
-                        messageType: messageType
+                        messageType: type
                     });
                 });
             });

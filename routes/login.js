@@ -10,9 +10,9 @@ router.get('/', function (req, res, next) {
 
 /* GET home page. */
 router.get('/login', function(req, res, next) {
+    var sess = sh.getSession(req);
     let c = req.query['e'];
     let message, type;
-    var sess = sh.getSession(req);
 
     switch(c) {
         case "201":

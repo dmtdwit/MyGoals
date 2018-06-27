@@ -1,7 +1,7 @@
 <%include ../layouts/header.ejs %>
 <%include ../layouts/navbar.ejs %>
 
-<body>
+<body onload="displaySample();">
 <main>
     <br>
     <br>
@@ -58,6 +58,7 @@
                                         <div class="input-field col l6 m6 s12">
                                             <select id="iconColor" name="iconColor" onchange="displaySample()">
                                                 <option value="" disabled selected>Choose your option</option>
+                                                <option value="white" <% if(award.iconColor == 'white'){ %> selected="true" <%}%>>White</option>
                                                 <option value="green" <% if(award.iconColor == 'green'){ %> selected="true" <%}%>>Green</option>
                                                 <option value="red" <% if(award.iconColor == 'red'){ %> selected="true" <%}%>>Red</option>
                                                 <option value="blue" <% if(award.iconColor == 'blue'){ %> selected="true" <%}%>>Blue</option>
