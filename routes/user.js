@@ -5,6 +5,16 @@ var fs = require('fs');
 // var md5 = require('md5');
 var sh = require('../service/sessionHandler');
 var formidable = require('formidable');
+var nodemailer = require('nodemailer');
+
+var transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'rnd@deerwalk.edu.np',
+        pass: 'i am hero'
+    }
+});
+
 
 router.get('/create', function(req, res, next) {
 
@@ -37,13 +47,17 @@ router.get('/edit', function(req, res, next) {
                         id: user.ManagerId
                     }
                 }).then(function (manager) {
+                    var managerId = 0;
+                    if(manager!==null){
+                        managerId = manager.id
+                    }
                     res.render('user/edit', {
                         title: 'Edit User | My Goals',
                         firstName: user.name.split(" ")[0],
                         lastName: user.name.split(" ")[1],
                         user: user,
                         users: users,
-                        managerId: manager.id,
+                        managerId: managerId,
                         sess: sh.getSession(req)
                     });
                 });
@@ -77,19 +91,33 @@ router.post('/update', function(req, res, next) {
         }
         console.log("User is ", user);
         if(user){
-            user.updateAttributes({
-                name: req.body.firstName + " " + req.body.lastName,
-                password: req.body.email,
-                email: req.body.email,
-                category: category
-            }).then(function(result){
-                return result.setRole(role);
-            }).then(function(resultTwo){
-                return resultTwo.setManager(req.body.manager);
+            models.User.findAll({
+                where:{
+                    email: req.body.email
+                }
+            }).then(function (usersList) {
+                if(usersList.length===0||user.email===req.body.email){
+                    user.updateAttributes({
+                        name: req.body.firstName + " " + req.body.lastName,
+                        password: req.body.email,
+                        email: req.body.email,
+                        category: category
+                    }).then(function(result){
+                        return result.setRole(role);
+                    }).then(function(resultTwo){
+                        if(req.body.manager===0||req.body.manager==='0'){
+                            return resultTwo;
+                        }else{
+                            return resultTwo.setManager(req.body.manager);
+                        }
+                    });
+                    res.redirect("/user/list?e=202"); // user updated successfully
+                }else{
+                    res.redirect("/user/list?e=402"); // user with that email already exists
+                }
             });
-            res.redirect("/admin/dashboard");
         }else {
-            res.redirect("/admin/dashboard?e=155") // user not found for updating information
+            res.redirect("/user/list?e=403"); // user not found for updating information
         }
     });
 });
@@ -112,19 +140,45 @@ router.post('/save', function(req, res, next) {
     } else {
         category = "STUDENT"
     }
-
-    models.User.create({
-        name: req.body.firstName + " " + req.body.lastName,
-        password: req.body.email,
-        email: req.body.email,
-        category: category
-    }).then(function(result){
-        return result.setRole(role);
-    }).then(function(resultTwo){
-        return resultTwo.setManager(req.body.manager);
+    models.User.findAll({
+        where:{
+            email: req.body.email
+        }
+    }).then(function (userList) {
+       if(userList.length===0){
+           models.User.create({
+               name: req.body.firstName + " " + req.body.lastName,
+               password: req.body.email,
+               email: req.body.email,
+               category: category
+           }).then(function(result){
+               return result.setRole(role);
+           }).then(function(resultTwo){
+               if(req.body.manager===0||req.body.manager==='0'){
+                   return resultTwo.setManager(0)
+               }else{
+                   return resultTwo.setManager(req.body.manager);
+               }
+           }).then(function (result3) {
+               var mailOptions = {
+                   from: 'rnd@deerwalk.edu.np',
+                   to: result3.email+'@deerwalk.edu.np',
+                   subject: 'Credentials | MyGoals',
+                   text: 'Hello '+req.body.firstName+',\n\nYour account for MyGoals application has been created. \n\n\tEmail: '+result3.email+'@deerwalk.edu.np\n\tPassword: '+result3.password+'\n\nPlease use this credentials to sign in.\n\nThanks,\nMyGoals Team'
+               };
+               transporter.sendMail(mailOptions, function(error, info){
+                   if (error) {
+                       console.log(error);
+                   } else {
+                       console.log('Email sent: ' + info.response);
+                   }
+               });
+           });
+           res.redirect("/user/list?e=201"); // user created successfully
+       }else{
+           res.redirect("/user/list?e=401"); // user with same email already exits
+       }
     });
-
-    res.redirect("/admin/dashboard");
 });
 
 router.get('/profile', function(req, res, next) {
@@ -132,7 +186,22 @@ router.get('/profile', function(req, res, next) {
     sh.checkSession(req, res);
 
     var id = req.query['id'];
+    var c = req.query['e'];
+    var message, type;
 
+    switch(c) {
+        case "204":
+            message = "New profile picture successfully saved.";
+            type = "success";
+            break;
+        case "205":
+            message = "No any profile picture selected.";
+            type = "warning";
+            break;
+        default:
+            message = "";
+            type = "";
+    }
     models.User.findOne({
         where: {
             id: id
@@ -159,7 +228,9 @@ router.get('/profile', function(req, res, next) {
                         manager: manager,
                         subordinates: subordinates,
                         goals: goals,
-                        sess: sh.getSession(req)
+                        sess: sh.getSession(req),
+                        message: message,
+                        messageType: messageType
                     });
                 });
             });
@@ -170,6 +241,58 @@ router.get('/profile', function(req, res, next) {
 router.get('/list', function(req, res, next) {
 
     sh.checkSession(req, res);
+    var c = req.query['e'];
+    var message, type;
+
+    switch(c) {
+        case "201":
+            message = "User successfully created.";
+            type = "success";
+            break;
+        case "202":
+            message = "User successfully updated.";
+            type = "success";
+            break;
+        case "203":
+            message = "User successfully deleted.";
+            type = "success";
+            break;
+        case "401":
+            message = "User cannot be created as user with same email already exists.";
+            type = "error";
+            break;
+        case "402":
+            message = "User cannot be updated as user with same email already exists.";
+            type = "error";
+            break;
+        case "403":
+            message = "User cannot be updated as user with given information doesn't exist.";
+            type = "error";
+            break;
+        case "404":
+            message = "User cannot be deleted as user has replies in some remarks.";
+            type = "error";
+            break;
+        case "405":
+            message = "User cannot be deleted as user has some remarks.";
+            type = "error";
+            break;
+        case "406":
+            message = "User cannot be deleted as user has some goals.";
+            type = "error";
+            break;
+        case "407":
+            message = "User cannot be deleted as user has been assigned as manager for someone.";
+            type = "error";
+            break;
+        case "408":
+            message = "User cannot be deleted as user doesn't exist.";
+            type = "error";
+            break;
+        default:
+            message = "";
+            type = "";
+    }
 
     models.User.findAll({
         where: {
@@ -179,7 +302,9 @@ router.get('/list', function(req, res, next) {
         res.render('user/list', {
             title: 'All Users',
             users: users,
-            sess: sh.getSession(req)
+            sess: sh.getSession(req),
+            message: message,
+            messageType: type
         });
     });
 });
@@ -191,7 +316,7 @@ router.get('/subordinates', function(req, res, next){
     var sess= sh.getSession(req);
 
     if (sess.role !== "USER") {
-        res.redirect('/?e=102'); // Not authorized
+        return res.redirect('/login?e=403'); // Not authorized
     } else {
         models.User.findAll({
             where: {
@@ -209,11 +334,11 @@ router.get('/subordinates', function(req, res, next){
 });
 
 router.get('/dashboard', function(req, res, next) {
-
+    console.log("We are inside dashboard function");
     sh.checkSession(req, res);
 
     if (sh.getSession(req).role !== "USER") {
-        res.redirect('/?e=102'); // Not authorized
+        return res.redirect('/login?e=403'); // Not authorized
     } else {
         models.User.findOne({
             where: {
@@ -263,7 +388,7 @@ router.post('/savePP', function (req, res, next) {
                         user.updateAttributes({
                             imageName: newFilename
                         }).then(function () {
-                            res.redirect('./profile?id='+sess.userId)
+                            res.redirect('./profile?e=204&id='+sess.userId)
                         });
                     }
                 });
@@ -275,11 +400,79 @@ router.post('/savePP', function (req, res, next) {
                 }
             }).then(function (user) {
                 if(user){
-                    res.redirect('./profile?id='+sess.userId)
+                    res.redirect('./profile?e=205&id='+sess.userId)
                 }
             });
         }
     });
+});
+
+
+router.get('/delete', function (req, res, next) {
+   var id = req.query['id'];
+   console.log("Id is ", id);
+   models.User.findOne({
+       where:{
+           id: id
+       }
+   }).then(function (userToDelete) {
+       if(userToDelete){
+           console.log("User Found");
+           models.User.findAll({
+               where:{
+                   ManagerId: userToDelete.id
+               }
+           }).then(function (managers) {
+               console.log("Managers are ", managers);
+               if(managers.length===0){
+                   console.log("No Managers Found");
+                    models.Goal.findAll({
+                        where:{
+                            UserId: userToDelete.id
+                        }
+                    }).then(function (goals) {
+                        if(goals.length===0){
+                            console.log("No Goals Found");
+                            models.Remark.findAll({
+                                where:{
+                                    RemarkById: userToDelete.id
+                                }
+                            }).then(function (remarks) {
+                                if(remarks.length===0){
+                                    console.log("No remarks found");
+                                    models.Reply.findAll({
+                                        where:{
+                                            RepliedById: userToDelete.id
+                                        }
+                                    }).then(function (replies) {
+                                       if(replies.length===0){
+                                           models.User.destroy({
+                                               where: {
+                                                   id: id
+                                               }
+                                           }).then(function () {
+                                               res.redirect('/user/list?e=203')
+                                           })
+                                       }else{
+                                           res.redirect('/user/list?e=404')
+                                       }
+                                    });
+                                }else{
+                                    res.redirect('/user/list?e=405')
+                                }
+                            })
+                        }else{
+                            res.redirect('/user/list?e=406')
+                        }
+                    })
+               }else{
+                   res.redirect('/user/list?e=407')
+               }
+           })
+       }else{
+           res.redirect('/user/list?e=408')
+       }
+   })
 });
 
 module.exports = router;

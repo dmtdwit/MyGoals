@@ -10,38 +10,60 @@ router.get('/', function (req, res, next) {
 
 /* GET home page. */
 router.get('/login', function(req, res, next) {
+    var sess = sh.getSession(req);
     var c = req.query['e'];
     var message, type;
 
     switch(c) {
-        case "101":
-            message = "Please login first.";
-            type = "warning";
+        case "201":
+            message = "Successfully logged out.";
+            type = "success";
             break;
-        case "102":
-            message = "You are authorized to view this page.";
+        case "401":
+            message = "Email and password do not match";
             type = "error";
             break;
-        case "103":
-            message = "Email/password do not match";
-            type = "warning";
-            break;
-        case "104":
+        case "402":
             message = "Email does not exist.";
-            type = "warning";
+            type = "error";
+            break;
+        case "403":
+            console.log('We are under unauthorized block');
+            message = "You are not authorized to view this page.";
+            type = "error";
             break;
         default:
             message = "";
             type = "";
     }
-
-    res.render('auth/login',
-        {
-            title: 'Login',
-            message: message,
-            messageType: type
+    console.log("Session is ", sess);
+    if(sess.email===''||sess.email===null||typeof(sess.email)==='undefined'){
+        res.render('auth/login',
+            {
+                title: 'Login',
+                message: message,
+                messageType: type
+            }
+        );
+    }else{
+        if(sess.role==="USER"){
+            console.log("Value of e is ",c);
+            res.redirect('/user/dashboard');
         }
-    );
+        if(sess.role==="ADMIN"){
+            console.log("Value of e is ",c);
+            res.redirect('/admin/dashboard');
+        }else{
+            res.render('auth/login',
+                {
+                    title: 'Login',
+                    message: message,
+                    messageType: messageType
+                }
+            );
+        }
+    }
+
 });
 
 router.post('/auth', function(req, res, next) {
@@ -53,7 +75,6 @@ router.post('/auth', function(req, res, next) {
     }).then(function(result){
         if(result){
             if(result.password === req.body.password) {
-
                 if(result.RoleId === 2) {
                     sh.setSession(req, result.id, result.name, result.email, "USER");
                     res.redirect('/user/dashboard');
@@ -62,17 +83,17 @@ router.post('/auth', function(req, res, next) {
                     res.redirect('/admin/dashboard');
                 }
             } else {
-                res.redirect('login?e=103'); // Email/Password do not match
+                res.redirect('login?e=401'); // Email/Password do not match
             }
         } else {
-            res.redirect('login?e=104'); // Email does not exist
+            res.redirect('login?e=402'); // Email does not exist
         }
     })
 });
 
 router.get('/logout', function(req, res, next){
     sh.getSession(req).destroy();
-    res.redirect("/");
+    res.redirect("/login?e=201");
 });
 
 module.exports = router;

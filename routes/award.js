@@ -12,7 +12,7 @@ router.get('/list', function (req, res, next) {
     var sess = sh.getSession(req);
 
     if (sess.role === "USER") {
-        res.redirect('/?e=102');
+        res.redirect('/login?e=403');
     }
 
     models.Award.findAll({}).then(function (awards) {
