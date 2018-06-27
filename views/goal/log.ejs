@@ -1,0 +1,64 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+
+<body class="bg">
+<br><br>
+    <main>
+        <div class="container">
+            <div class="row">
+                <div class="col l12 s12 m12">
+                    <div class="card">
+                        <div class="card-tabs">
+                            <ul class="tabs tabs-fixed-width">
+                                <li class="tab">
+                                    <a href="#log" class="center-align dw-blue-1 white-text">
+                                        <span class="tab-header"> Progress Log </span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="card-content">
+                            <table>
+                                <tr>
+                                    <td colspan="2"> <h4 class="center-align">Goal: <%= goal.goal %> </h4></td>
+                                </tr>
+                                <tr>
+                                    <td> <b>Progress:</b>
+                                        <form>
+                                            <p class="range-field tooltipped" style="margin-left: 5%; margin-right: 5%;" data-position="right" data-tooltip="<%= goal.progress %>%">
+                                                <input type="range" value="<%= goal.progress %>" min="0" max="100" disabled/>
+                                            </p>
+                                        </form>
+                                    </td>
+                                    <td class="right-align"> <b>Deadline:</b> <%= goal.deadline %> </td>
+                                </tr>
+                            </table>
+                            <table>
+                                <thead>
+                                    <th> S. N. </th>
+                                    <th> Remarks </th>
+                                    <th> Updated Date </th>
+                                    <th> Updated Time </th>
+                                </thead>
+                                <tbody>
+                                <%
+                                    i = 1
+                                logs.forEach(function(log){ %>
+                                    <tr>
+                                        <td> <%= i++ %></td>
+                                        <td> <%= log.remark %></td>
+                                        <td> <%= log.updatedAt.toDateString() %></td>
+                                        <td> <%= log.updatedAt.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1"); %></td>
+                                    </tr>
+                                <% }) %>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+</body>
+
+<% include ../layouts/footer.ejs %>
