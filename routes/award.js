@@ -9,8 +9,8 @@ router.get('/', function (req, res, next) {
 
 router.get('/list', function (req, res, next) {
     sh.checkSession(req, res);
-    var c = req.query['e'];
-    var message, type;
+    let c = req.query['e'];
+    let message, type;
 
     switch(c) {
         case "201":
@@ -99,7 +99,6 @@ router.get('/create', function (req, res, next) {
         sess: sess
    });
 });
-
 
 router.get('/save', function (req, res, next) {
     sh.checkSession(req, res);

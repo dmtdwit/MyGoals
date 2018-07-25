@@ -1,7 +1,7 @@
 module.exports = {
 
     setSession: function(req, id, name, email, role) {
-        var sess = req.session;
+        let sess = req.session;
 
         sess.name = name;
         sess.email = email;

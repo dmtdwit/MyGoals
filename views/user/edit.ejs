@@ -40,12 +40,28 @@
 
                                         <div class="input-field col l6 m6 s12">
                                             <i class="material-icons prefix">email</i>
-                                            <input id="email" type="text" name="email" value="<%= user.email %>" class="validate">
+                                            <input id="email" type="text" name="email" value="<%= user.email.split('@')[0] %>" class="validate">
                                             <label for="email">Email</label>
                                         </div>
 
                                         <div class="input-field col l6 m6 s12">
-                                            <h6>@deerwalk.edu.np</h6>
+                                            <select name="address" id="address">
+                                                <% if (user.email.split('@')[1] === "deerwalk.edu.np") { %>
+                                                    <option selected> @deerwalk.edu.np </option>
+                                                <% } else { %>
+                                                    <option> @deerwalk.edu.np </option>
+                                                <% } %>
+                                                <% if (user.email.split('@')[1] === "sifal.deerwalk.edu.np") { %>
+                                                <option selected> @sifal.deerwalk.edu.np </option>
+                                                <% } else { %>
+                                                <option> @sifal.deerwalk.edu.np </option>
+                                                <% } %>
+                                                <% if (user.email.split('@')[1] === "deerwalkcompware.com") { %>
+                                                <option selected> @deerwalkcompware.com </option>
+                                                <% } else { %>
+                                                <option> @deerwalkcompware.com </option>
+                                                <% } %>
+                                            </select>
                                         </div>
                                     </div>
                                     <div class="row">

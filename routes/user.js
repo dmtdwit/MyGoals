@@ -3,18 +3,17 @@ const router = express.Router();
 const models = require('../models');
 const fs = require('fs');
 // var md5 = require('md5');
-var nodemailer = require('nodemailer');
 const sh = require('../service/sessionHandler');
 const formidable = require('formidable');
+const nodemailer = require('nodemailer');
 
-var transporter = nodemailer.createTransport({
+const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
         user: 'rnd@deerwalk.edu.np',
         pass: 'i am hero'
     }
 });
-
 
 router.get('/create', function(req, res, next) {
 
@@ -47,7 +46,7 @@ router.get('/edit', function(req, res, next) {
                         id: user.ManagerId
                     }
                 }).then(function (manager) {
-                    var managerId = 0;
+                    let managerId = 0;
                     if(manager!==null){
                         managerId = manager.id
                     }
@@ -66,12 +65,11 @@ router.get('/edit', function(req, res, next) {
 
 });
 
-
 router.post('/update', function(req, res, next) {
 
     sh.checkSession(req, res);
-    var category, role;
-    var id = req.body.id;
+    let category, role;
+    const id = req.body.id;
     console.log("Id of user is ", id);
 
     models.User.findOne({
@@ -122,7 +120,6 @@ router.post('/update', function(req, res, next) {
     });
 });
 
-
 router.post('/save', function(req, res, next) {
 
     sh.checkSession(req, res);
@@ -135,22 +132,18 @@ router.post('/save', function(req, res, next) {
         role = 1
     }
 
-    if(!req.body.category) {
-        category = "EMPLOYEE"
-    } else {
-        category = "STUDENT"
-    }
+
     models.User.findAll({
         where:{
-            email: req.body.email
+            email: req.body.email + req.body.address
         }
     }).then(function (userList) {
        if(userList.length===0){
            models.User.create({
                name: req.body.firstName + " " + req.body.lastName,
                password: req.body.email,
-               email: req.body.email,
-               category: category
+               email: req.body.email + req.body.address,
+               category: req.body.category
            }).then(function(result){
                return result.setRole(role);
            }).then(function(resultTwo){
@@ -160,19 +153,19 @@ router.post('/save', function(req, res, next) {
                    return resultTwo.setManager(req.body.manager);
                }
            }).then(function (result3) {
-               var mailOptions = {
+               let mailOptions = {
                    from: 'rnd@deerwalk.edu.np',
-                   to: result3.email+'@deerwalk.edu.np',
+                   to: result3.email,
                    subject: 'Credentials | MyGoals',
                    text: 'Hello '+req.body.firstName+',\n\nYour account for MyGoals application has been created. \n\n\tEmail: '+result3.email+'@deerwalk.edu.np\n\tPassword: '+result3.password+'\n\nPlease use this credentials to sign in.\n\nThanks,\nMyGoals Team'
                };
-               transporter.sendMail(mailOptions, function(error, info){
-                   if (error) {
-                       console.log(error);
-                   } else {
-                       console.log('Email sent: ' + info.response);
-                   }
-               });
+               // transporter.sendMail(mailOptions, function(error, info){
+               //     if (error) {
+               //         console.log(error);
+               //     } else {
+               //         console.log('Email sent: ' + info.response);
+               //     }
+               // });
            });
            res.redirect("/user/list?e=201"); // user created successfully
        }else{
@@ -186,8 +179,8 @@ router.get('/profile', function(req, res, next) {
     sh.checkSession(req, res);
 
     let id = req.query['id'];
-    var c = req.query['e'];
-    var message, type;
+    const c = req.query['e'];
+    let message, type;
 
     switch(c) {
         case "204":
@@ -241,8 +234,8 @@ router.get('/profile', function(req, res, next) {
 router.get('/list', function(req, res, next) {
 
     sh.checkSession(req, res);
-    var c = req.query['e'];
-    var message, type;
+    const c = req.query['e'];
+    let message, type;
 
     switch(c) {
         case "201":
@@ -306,6 +299,49 @@ router.get('/list', function(req, res, next) {
             message: message,
             messageType: type
         });
+    });
+});
+
+router.get('/getManager', function(req, res, next){
+
+    models.User.findOne({
+        where: {
+            id: req.query['id']
+        }
+    }).then(function(user){
+        models.User.findOne({
+            where: {
+                id: user.ManagerId
+            }
+        }).then(function(manager){
+            res.send(manager);
+        });
+    });
+});
+
+router.get('/getUser', function(req, res, next){
+
+    let userId = req.query['userId'];
+
+    models.User.findOne({
+        where: {
+            id: userId
+        }
+    }).then(function(result){
+        res.send(result);
+    })
+});
+
+router.get('/getAllSubordinates', function(req, res, next){
+
+    let userId = req.query['userId'];
+
+    models.User.findAll({
+        where: {
+            ManagerId: userId
+        }
+    }).then(function(subordinates){
+       res.send(subordinates) ;
     });
 });
 
@@ -375,7 +411,7 @@ router.post('/savePP', function (req, res, next) {
         arrayOfFilename = oldFilename.split('.');
         fileExt = arrayOfFilename[arrayOfFilename.length-1];
         newFilename = sess.userId+'.'+fileExt;
-        var newpath = '../public/profilePictures/' + newFilename;
+        let newpath = '../public/profilePictures/' + newFilename;
         if(oldFilename!==''&&oldFilename!==null){
             fs.rename(oldpath, newpath, function (err) {
                 if (err) throw err;
@@ -407,39 +443,32 @@ router.post('/savePP', function (req, res, next) {
     });
 });
 
-
 router.get('/delete', function (req, res, next) {
-   var id = req.query['id'];
-   console.log("Id is ", id);
+   const id = req.query['id'];
    models.User.findOne({
        where:{
            id: id
        }
    }).then(function (userToDelete) {
        if(userToDelete){
-           console.log("User Found");
            models.User.findAll({
                where:{
                    ManagerId: userToDelete.id
                }
            }).then(function (managers) {
-               console.log("Managers are ", managers);
                if(managers.length===0){
-                   console.log("No Managers Found");
                     models.Goal.findAll({
                         where:{
                             UserId: userToDelete.id
                         }
                     }).then(function (goals) {
                         if(goals.length===0){
-                            console.log("No Goals Found");
                             models.Remark.findAll({
                                 where:{
                                     RemarkById: userToDelete.id
                                 }
                             }).then(function (remarks) {
                                 if(remarks.length===0){
-                                    console.log("No remarks found");
                                     models.Reply.findAll({
                                         where:{
                                             RepliedById: userToDelete.id

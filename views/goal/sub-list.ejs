@@ -6,21 +6,46 @@
         background-color: #0F5288 !important;
     }
 </style>
-<!-- Modal Structure -->
+<!-- Modal Award -->
 <div id="awardModal" class="modal">
-    <form action="/goal/award" method="post">
-        <input type="hidden" id="goalId" name="goalId">
-        <input type="hidden" id="userId" name="userId" value="<%= subordinate.id %>">
         <div class="modal-content">
-            <h4>Award</h4>
+                <h4>Award <i class="material-icons modal-close" style="position: relative; float: right;">close</i></h4>
+            <form action="/goal/award" method="post">
+                <input type="hidden" id="goalId" name="goalId">
+                <input type="hidden" id="userId" name="userId" value="<%= subordinate.id %>">
                 <select id="award" name="award" onchange="displayAward(this.value)">
                     <option> Select an award </option>
                 </select><br>
             <div id="awardIcon" class="center-align"></div>
         </div>
         <div class="modal-footer">
-            <button href="#!" class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text align-center">
+            <button class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text align-center">
                 Award
+            </button>
+        </div>
+    </form>
+</div>
+<!-- Modal Remark -->
+<div id="remarkModal" class="modal">
+        <div class="modal-content">
+            <h4>
+                Remarks <i class="material-icons modal-close" style="position: relative; float: right;" onclick="document.getElementById('allRemarks').innerHTML = '' ">close</i>
+            </h4>
+        <form action="/remark/create" method="post">
+            <input type="hidden" id="goalIdForRemark" name="goalIdForRemark">
+            <input type="hidden" id="userId" name="userId" value="<%= sess.userId %>">
+            <input type="hidden" id="subordinateId" name="subordinateId" value="<%= subordinate.id %>">
+            <ul class="collection" id="allRemarks"></ul>
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <i class='material-icons circle dw-blue-1'>comment</i>
+                    <input name="remark" type="text" id="remark" autocomplete="off" placeholder="Write your remark here" autofocus>
+                </li>
+            </ul>
+        </div>
+        <div class="modal-footer">
+            <button class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text align-center">
+                Add Remark
             </button>
         </div>
     </form>
@@ -61,7 +86,8 @@
                                             <th> Action </th>
                                             <th> Progress </th>
                                             <th> Achievement </th>
-                                            <th class="center-align"> Remark/s </th>
+                                            <th> Log </th>
+                                            <th class="center-align"> Remarks </th>
                                         </thead>
                                         <tbody>
                                         <% i = 1
@@ -103,21 +129,34 @@
                                             <td>
                                                 <% if (goal.goalStatus === "COMPLETED") {
                                                     if(goal.AwardId) { %>
-                                                        <span id="awardIcon<%= goal.id %>"></span>
-                                                        <script type="text/javascript">
-                                                            $(document).ready(function(){
-                                                                getAward(<%= goal.AwardId %>);
-                                                            });
-                                                        </script>
-                                                <% } else {
-                                                %>
-                                                <a class="waves-effect waves-light btn modal-trigger dw-green-1" href="#awardModal" onclick="getAwardList(<%= goal.id %>)">Award</a>
-                                                <% }
+                                                            <span id="awardIcon<%= goal.id %>"></span>
+                                                            <script type="text/javascript">
+                                                                $(document).ready(function(){
+                                                                    getAward(<%= goal.id %>, <%= goal.AwardId %>);
+                                                                });
+                                                            </script>
+                                                    <% } else { %>
+                                                    <a class="waves-effect waves-light btn modal-trigger dw-green-1" href="#awardModal" onclick="getAwardList(<%= goal.id %>)">Award</a>
+                                                    <% }
                                                 } else { %>
                                                     N/A
                                                 <% } %>
                                             </td>
-                                            <td class="center-align"> <i class="material-icons">visibility</i> </td>
+                                            <td>
+                                                <% if (goal.goalStatus === "REJECTED" || goal.goalStatus === "PENDING") { %>
+                                                N/A
+                                                <% } else {%>
+                                                <a href="/goal/view-log?id=<%= goal.id %>"
+                                                   class="btn btn-flat dw-green-1">
+                                                    View Log
+                                                </a>
+                                                <% } %>
+                                            </td>
+                                            <td class="center-align">
+                                                <a class="modal-trigger text-dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
+                                                    <i class="material-icons">visibility</i>
+                                                </a>
+                                            </td>
                                         </tr>
                                         <%
                                             }
@@ -132,17 +171,20 @@
                                 <div class="col l12 s12 m12">
                                     <table>
                                         <thead>
-                                            <th> S. N. </th>
-                                            <th> Goal </th>
-                                            <th> Set Date </th>
-                                            <th> Deadline </th>
-                                            <th> Action </th>
-                                            <th class="center-align"> Remark/s </th>
+                                        <th> S. N. </th>
+                                        <th> Goal </th>
+                                        <th> Set Date </th>
+                                        <th> Deadline </th>
+                                        <th> Action </th>
+                                        <th> Progress </th>
+                                        <th> Achievement </th>
+                                        <th> Log </th>
+                                        <th class="center-align"> Remark/s </th>
                                         </thead>
                                         <tbody>
                                         <% i = 1
                                         goals.forEach(function(goal) {
-                                            if(goal.goalType === "PERSONAL") {
+                                        if(goal.goalType === "PERSONAL") {
                                         %>
                                         <tr class="transparent" style="border-bottom: 0px">
                                             <td> <%= i++ %> </td>
@@ -150,18 +192,66 @@
                                             <td> <%= goal.setDate %> </td>
                                             <td> <%= goal.deadline %></td>
                                             <td>
-                                                <a href="action?g=<%= goal.id %>&q=APPROVED" class="btn btn-floating">
+                                                <% if (goal.goalStatus === "PENDING") {%>
+                                                <a href="action?g=<%= goal.id %>&q=APPROVED&u=<%= subordinate.id %>" class="btn btn-floating">
                                                     <i class="material-icons dw-green-1 tooltipped"
                                                        data-position="top" data-tooltip="Approve">check</i>
                                                 </a>
-                                                <a href="action?g=<%= goal.id %>&q=REJECTED" class="btn btn-floating">
+                                                <a href="action?g=<%= goal.id %>&q=REJECTED&u=<%= subordinate.id %>" class="btn btn-floating">
                                                     <i class="material-icons red darken-1 tooltipped"
                                                        data-position="top" data-tooltip="Reject">clear</i>
                                                 </a>
+                                                <% } else if (goal.deadline > new Date()) { %>
+                                                MISSED
+                                                <% } else if (goal.progress === 100.0) { %>
+                                                COMPLETED
+                                                <% } else { %>
+                                                <span class="tooltipped" data-position="top"
+                                                      data-tooltip="<%= goal.goalStatus %> on <%= goal.approvedDate %>">
+                                                    <%= goal.goalStatus %>
+                                                </span>
+                                                <% } %>
                                             </td>
-                                            <td class="center-align"> <i class="material-icons">visibility</i> </td>
+                                            <td>
+                                                <p class="range-field tooltipped" style="margin-left: 5%; margin-right: 5%;"
+                                                   data-position="right" data-tooltip="<%= goal.progress %>%">
+                                                    <input type="range" id="progress" value="<%= goal.progress %>" disabled/>
+                                                </p>
+                                            </td>
+                                            <td>
+                                                <% if (goal.goalStatus === "COMPLETED") {
+                                                    if(goal.AwardId) { %>
+                                                        <span id="awardIcon<%= goal.id %>"></span>
+                                                        <script type="text/javascript">
+                                                            $(document).ready(function(){
+                                                                getAward(<%= goal.id %>, <%= goal.AwardId %>);
+                                                            });
+                                                        </script>
+                                                    <% } else { %>
+                                                    <a class="waves-effect waves-light btn modal-trigger dw-green-1" href="#awardModal" onclick="getAwardList(<%= goal.id %>)">Award</a>
+                                                    <% }
+                                                } else { %>
+                                                N/A
+                                                <% } %>
+                                            </td>
+                                            <td>
+                                                <% if (goal.goalStatus === "REJECTED" || goal.goalStatus === "PENDING") { %>
+                                                N/A
+                                                <% } else {%>
+                                                <a href="/goal/view-log?id=<%= goal.id %>"
+                                                   class="btn btn-flat dw-green-1">
+                                                    View Log
+                                                </a>
+                                                <% } %>
+                                            </td>
+                                            <td class="center-align">
+                                                <a class="modal-trigger text-dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
+                                                    <i class="material-icons">visibility</i>
+                                                </a>
+                                            </td>
                                         </tr>
-                                        <% }
+                                        <%
+                                        }
                                         }) %>
                                         </tbody>
                                     </table>

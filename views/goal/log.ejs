@@ -1,6 +1,31 @@
 <% include ../layouts/header.ejs %>
 <% include ../layouts/navbar.ejs %>
 
+<div id="logRemarkModal" class="modal">
+    <div class="modal-content">
+        <h4>
+            Remarks <i class="material-icons modal-close" style="position: relative; float: right;" onclick="document.getElementById('allRemarks').innerHTML = '' ">close</i>
+        </h4>
+        <form action="/logRemark/create" method="post">
+            <input type="hidden" id="logIdForRemark" name="logIdForRemark">
+            <input type="hidden" id="userId" name="userId" value="<%= sess.userId %>">
+            <input type="hidden" id="goalId" name="goalId" value="<%= goal.id %>">
+            <ul class="collection" id="allRemarks"></ul>
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <i class='material-icons circle dw-blue-1'>comment</i>
+                    <input name="remark" type="text" id="remark" autocomplete="off" placeholder="Write your remark here" >
+                </li>
+            </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text align-center">
+            Add Remark
+        </button>
+    </div>
+    </form>
+</div>
+
 <body class="bg">
 <br><br>
     <main>
@@ -37,8 +62,10 @@
                                 <thead>
                                     <th> S. N. </th>
                                     <th> Remarks </th>
+                                    <th> Progress </th>
                                     <th> Updated Date </th>
                                     <th> Updated Time </th>
+                                    <th> Remarks </th>
                                 </thead>
                                 <tbody>
                                 <%
@@ -47,8 +74,14 @@
                                     <tr>
                                         <td> <%= i++ %></td>
                                         <td> <%= log.remark %></td>
+                                        <td> <%= log.progressMade %></td>
                                         <td> <%= log.updatedAt.toDateString() %></td>
                                         <td> <%= log.updatedAt.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1"); %></td>
+                                        <td class="center-align">
+                                            <a class="modal-trigger text-dw-green-1" href="#logRemarkModal" onclick="getLogRemarks(<%= log.id %>)">
+                                                <i class="material-icons">visibility</i>
+                                            </a>
+                                        </td>
                                     </tr>
                                 <% }) %>
                                 </tbody>
@@ -61,4 +94,13 @@
     </main>
 </body>
 
+<script>
+    let message = '<%=message%>'
+    let messageType = '<%=messageType%>'
+    if(message===''||message===null||typeof message==='undefined'){
+
+    }else{
+        displayMessage(message, messageType, 4000)
+    }
+</script>
 <% include ../layouts/footer.ejs %>

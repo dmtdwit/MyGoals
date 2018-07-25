@@ -51,9 +51,9 @@ router.post('/save', function(req, res, next) {
             }
         }).then(function(goalCountPers){
             if (goalType === "PERSONAL" && goalCountPers >= 1) {
-                res.redirect("/user/dashboard?e=111"); // Personal goal count is 1
+                res.redirect("/goal/list?e=102"); // Personal goal count is 1
             } else if (goalType === "ORGANIZATIONAL" && goalCountOrg >= 2) {
-                res.redirect("/user/dashboard?e=222"); // Organizational goal count is 2
+                res.redirect("/goal/list?e=103"); // Organizational goal count is 2
             } else {
                 models.User.findOne({
                     where: {
@@ -85,7 +85,7 @@ router.post('/save', function(req, res, next) {
                         });
                     }
                 });
-                res.redirect('/user/dashboard?m=101');
+                res.redirect('/goal/list?e=101');
             }
         })
     });
@@ -94,11 +94,12 @@ router.post('/save', function(req, res, next) {
 router.post('/log', function(req, res, next){
 
     models.Log.create({
-        remark: req.body.progressRemark
+        remark: req.body.progressRemark,
+        progressMade: req.body.progressMade
     }).then(function (result) {
         return result.setGoal(req.body.progressGoalId);
     }).then(function(){
-        res.redirect("/goal/list");
+        res.redirect("/goal/view-log?id="+ req.body.progressGoalId +"&e=201"); // Progress successfully updated
     })
 });
 
@@ -106,6 +107,18 @@ router.get('/view-log', function(req, res, next) {
 
     sh.checkSession(req, res);
     let sess = sh.getSession(req);
+    let c = req.query['e'];
+    let message, type;
+
+    switch(c) {
+        case "201":
+            message = "Log successfully updated.";
+            type = "success";
+            break;
+        default:
+            message = "";
+            type = "";
+    }
 
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -121,10 +134,12 @@ router.get('/view-log', function(req, res, next) {
                 }
             }).then(function (logs) {
                 res.render('goal/log', {
-                    title: 'Log | ' + sess.name,
+                    title: 'Log | ' + goal.goal,
                     goal: goal,
                     logs: logs,
-                    sess: sess
+                    sess: sess,
+                    message: message,
+                    messageType: type
                 });
             });
         });
@@ -149,19 +164,61 @@ router.get('/list', function(req, res, next) {
 
     sh.checkSession(req, res);
     let sess = sh.getSession(req);
-    
+    let c = req.query['e'];
+    let message, type;
+
+    switch(c) {
+        case "101":
+            message = "Goal successfully created.";
+            type = "success";
+            break;
+        case "102":
+            message = "You can only have 1 personal goal running/pending.";
+            type = "warning";
+            break;
+        case "103":
+            message = "You can only have 2 organizational goals running/pending.";
+            type = "warning";
+            break;
+        case "402":
+            message = "Award cannot be updated as award with same name already exists.";
+            type = "error";
+            break;
+        case "403":
+            message = "Award cannot be updated as award with given information doesn't exist.";
+            type = "error";
+            break;
+        case "404":
+            message = "Award cannot be deleted as award has been assigned to some goals.";
+            type = "error";
+            break;
+        case "405":
+            message = "Award cannot be deleted as award with given information doesn't exist.";
+            type = "error";
+            break;
+        default:
+            message = "";
+            type = "";
+    }
+
+
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
     } else {
         models.Goal.findAll({
             where: {
                 UserId: sess.userId
-            }
+            },
+            order: [
+                ['id', 'DESC']
+            ]
         }).then(function (goals) {
                 res.render('goal/list', {
                     title: 'All My Goals | ' + sess.name,
                     goals: goals,
-                    sess: sess
+                    sess: sess,
+                    message: message,
+                    messageType: type
                 });
         });
     }
@@ -176,7 +233,7 @@ router.get('/updateProgress', function(req, res, next){
         id: id
     }}).then(function(goal) {
         if(goal){
-            if(progress == 100) {
+            if(progress === 100) {
                 goal.updateAttributes({
                     progress: progress,
                     goalStatus: "COMPLETED"
@@ -248,6 +305,42 @@ router.get('/sub-list', function(req, res, next) {
             });
         });
     }
+});
+
+router.get('/all-subordinate-goals', function(req, res, next) {
+
+    sh.checkSession(req, res);
+
+    let sess = sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.User.findAll({
+            where: {
+                ManagerId: sess.userId
+            }
+        }).then(function (subordinates) {
+            res.render('goal/all-subordinate-goals',{
+                title: "Subordinates' Goals",
+                subordinates: subordinates,
+                sess: sess
+            })
+        })
+    }
+});
+
+router.get('/getAllGoals', function(req, res, next) {
+
+    let userId = req.query['userId'];
+
+    models.Goal.findAll({
+        where: {
+            UserId: userId
+        }
+    }).then(function(goals){
+       res.send(goals);
+    });
 });
 
 module.exports = router;

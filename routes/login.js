@@ -10,7 +10,7 @@ router.get('/', function (req, res, next) {
 
 /* GET home page. */
 router.get('/login', function(req, res, next) {
-    var sess = sh.getSession(req);
+    const sess = sh.getSession(req);
     let c = req.query['e'];
     let message, type;
 
@@ -28,7 +28,6 @@ router.get('/login', function(req, res, next) {
             type = "error";
             break;
         case "403":
-            console.log('We are under unauthorized block');
             message = "You are not authorized to view this page.";
             type = "error";
             break;
@@ -36,7 +35,7 @@ router.get('/login', function(req, res, next) {
             message = "";
             type = "";
     }
-    console.log("Session is ", sess);
+
     if(sess.email===''||sess.email===null||typeof(sess.email)==='undefined'){
         res.render('auth/login',
             {
@@ -47,11 +46,9 @@ router.get('/login', function(req, res, next) {
         );
     }else{
         if(sess.role==="USER"){
-            console.log("Value of e is ",c);
             res.redirect('/user/dashboard');
         }
         if(sess.role==="ADMIN"){
-            console.log("Value of e is ",c);
             res.redirect('/admin/dashboard');
         }else{
             res.render('auth/login',
@@ -70,7 +67,7 @@ router.post('/auth', function(req, res, next) {
 
     models.User.findOne({
         where: {
-            email: req.body.email
+            email: req.body.email + req.body.address
         }
     }).then(function(result){
         if(result){

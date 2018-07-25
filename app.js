@@ -1,17 +1,19 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-var session = require('express-session');
+const createError = require('http-errors');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
+const session = require('express-session');
 
-var loginRouter = require('./routes/login');
-var userRouter = require('./routes/user');
-var adminRouter = require('./routes/admin');
-var awardRouter = require('./routes/award');
-var goalRouter = require('./routes/goal');
+const loginRouter = require('./routes/login');
+const userRouter = require('./routes/user');
+const adminRouter = require('./routes/admin');
+const awardRouter = require('./routes/award');
+const goalRouter = require('./routes/goal');
+const remarkRouter = require('./routes/remark');
+const logRemarkRouter = require('./routes/logRemark');
 
-var app = express();
+const app = express();
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -29,6 +31,8 @@ app.use('/user', userRouter);
 app.use('/admin', adminRouter);
 app.use('/award', awardRouter);
 app.use('/goal', goalRouter);
+app.use('/remark', remarkRouter);
+app.use('/logRemark', logRemarkRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

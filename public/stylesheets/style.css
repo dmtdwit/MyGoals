@@ -128,12 +128,23 @@ textarea.materialize-textarea:focus:not([readonly]) {
     -webkit-box-shadow: 0 1px 0 0 #046031;
     box-shadow: 0 1px 0 0 #046031;
 }
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, [type="radio"].with-gap:checked+span:after {
+    border: 2px solid #046031;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:after {
+    background-color: #046031;
+}
+
+[type="radio"]:checked+span:after, [type="radio"].with-gap:checked+span:before, [type="radio"].with-gap:checked+span:after {
+    border: 2px solid #046031;
+}
+
+.dropdown-content li>a, .dropdown-content li>span {
+    color: #046031;
+}
 /* -- */
 
-@media (max-width: 360px) {
-    #mailText {
-        margin-top: -17%;
-    }
-}
 
 

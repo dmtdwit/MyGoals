@@ -4,11 +4,28 @@ $(document).ready(function() {
     $('.modal').modal();
     $('.tooltipped').tooltip();
     $('.tabs').tabs();
+    $('.collapsible').collapsible();
     $('.datepicker').datepicker({
         minDate: new Date(),
         disableWeekends: true
     });
 });
+
+function getManager(userId) {
+    const manager = document.getElementById('managerOf' + userId);
+
+    $.ajax({
+        url: '/user/getManager',
+        method: 'GET',
+        data: {
+            id: userId
+        },
+        success: function(result) {
+            console.log(result);
+            manager.innerHTML = "<span>" + result.name +"</span>";
+        }
+    });
+}
 
 function displaySample() {
     const iconName = document.getElementById('iconName').value;
@@ -71,12 +88,96 @@ function getAward(goalId, awardId) {
         });
 }
 
-function logModal(goalId) {
+function getGoalList(userId) {
+
+    let tableBody = document.getElementById('subordinateGoalsOf' + userId);
+
+    $.ajax({
+        url: "/goal/getAllGoals",
+        type: 'GET',
+        data: {
+            userId: userId
+        },
+        success: function(result) {
+            $.each(result, function(index, data) {
+                tableBody.insertRow(-1).innerHTML = "" +
+                    "<td>" + ++index + "</td>" +
+                    "<td>" + data.goal + "</td>" +
+                    "<td>" + data.goalType + "</td>" +
+                    "<td>" + data.goalStatus + "</td>" +
+                    "<td>" + data.progress + "%</td>" +
+                    "<td><a class='text-dw-green-2' href='/goal/view-log?id=" + data.id + "'><i class='material-icons'>visibility</i></a></td>" +
+                    "<td><a class='modal-trigger text-dw-green-1' id='triggerRemarkModal' href='#remarkModal' onclick='getRemarks("+data.id+")'>" +
+                        "<i class='material-icons'>visibility</i></a>" +
+                    "</td>";
+            });
+            if(!result.length) {
+                tableBody.parentNode.parentNode.innerHTML = "<h5>No Goals</h5>";
+            }
+        }
+    });
+}
+
+function getAllSubordinates(userId, managerName) {
+
+    let managerDiv = document.getElementById(managerName);
+
+    $.ajax({
+        url: '/user/getAllSubordinates',
+        type: 'GET',
+        data: {
+            userId: userId
+        },
+        success: function(result) {
+
+            $.each(result, function(index, data){
+                let ul = document.createElement('ul');
+                    ul.classList.add('collapsible');
+                    managerDiv.after(ul);
+                ul.innerHTML = "<li class='active'>" +
+                        "<div class='collapsible-header dw-blue-1 white-text'>" +
+                            "<i class='material-icons'>subdirectory_arrow_right</i> <span class='tab-header'> " +
+                                data.name + "\'s Goals</span>" +
+                        "</div>" +
+                        "<div class='collapsible-body'>" +
+                            "<div class='row' id='" + data.name + "'>" +
+                                    "<div class='col l12'>" +
+                                        "<table class='white'>" +
+                                            "<thead>" +
+                                                "<th style='width: 5%;'> S. N. </th>" +
+                                                "<th style='width: 60%;'> Goal </th>" +
+                                                "<th style='width: 10%;'> Type </th>" +
+                                                "<th style='width: 10%;'> Status </th>" +
+                                                "<th style='width: 5%;'> Progress </th>" +
+                                                "<th style='width: 5%;'> Log </th>" +
+                                                "<th style='width: 5%;'> Remarks </th>" +
+                                            "</thead>" +
+                                            "<tbody id='subordinateGoalsOf" + data.id + "'>" +
+                                            "</tbody>" +
+                                        "</table>" +
+                                    "</div>" +
+                            "</div>" +
+                        "</div>" +
+                    "</li>";
+                getGoalList(data.id);
+                $('.collapsible').collapsible();
+                getAllSubordinates(data.id, data.name);
+            });
+        },
+        error: function() {
+            console.log("No subordinate");
+        }
+    })
+}
+
+function logModal(goalId, previousValue) {
 
     $('#logModal').show();
 
     document.getElementById('progressGoalId').setAttribute('value', goalId);
     const progress = document.getElementById('progress'+goalId).value;
+    const progressMade = progress - previousValue;
+    document.getElementById('progressMade').setAttribute('value', progressMade);
     document.getElementById('progressValue').setAttribute('value', progress);
 }
 
@@ -96,6 +197,74 @@ function updateProgress() {
     });
 }
 
+function getUser(userId) {
+
+    let user = null;
+    $.ajax({
+        url: "/user/getUser",
+        type: "GET",
+        async: false,
+        data: {
+            userId: userId
+        },
+        success: function (result) {
+            user = result;
+        }
+    });
+    return user;
+}
+
+function getRemarks(goalId) {
+
+    document.getElementById('goalIdForRemark').setAttribute('value', goalId);
+    let remarks = document.getElementById('allRemarks');
+
+    $.ajax({
+        url: "/remark/getRemarks",
+        type: "GET",
+        data: {
+            goalId: goalId
+        },
+        success: function(result) {
+            $.each(result, function(index, data){
+
+                let li = document.createElement('li');
+                li.classList.add("collection-item", "avatar");
+                li.innerHTML = "" +
+                    "<i class='material-icons circle dw-green-1'>comment</i>" +
+                    "<input id='remarkContent' type='text' class='black-text' value=' " + data.remark + " ' disabled>" +
+                    "<strong>" + getUser(data.RemarkById).name + "</strong><em style='font-size: 0.9em;'>" + "   On " + new Date(data.createdAt).toDateString() + "</em>";
+                remarks.appendChild(li);
+            });
+        }
+    })
+}
+
+function getLogRemarks(logId) {
+
+    document.getElementById('logIdForRemark').setAttribute('value', logId);
+    let remarks = document.getElementById('allRemarks');
+
+    $.ajax({
+        url: "/logRemark/getLogRemarks",
+        type: "GET",
+        data: {
+            logId: logId
+        },
+        success: function(result) {
+            $.each(result, function(index, data){
+
+                let li = document.createElement('li');
+                li.classList.add("collection-item", "avatar");
+                li.innerHTML = "" +
+                    "<i class='material-icons circle dw-green-1'>comment</i>" +
+                    "<input id='remarkContent' type='text' class='black-text' value=' " + data.remark + " ' disabled>" +
+                    "<strong>" + getUser(data.RemarkById).name + "</strong><em style='font-size: 0.9em;'>" + "   On " + new Date(data.createdAt).toDateString() + "</em>";
+                remarks.appendChild(li);
+            });
+        }
+    })
+}
 
 function notify(type,text){
     let n = noty({
@@ -114,7 +283,6 @@ function notify(type,text){
         maxVisible: 1
     });
 }
-
 
 function displayMessage(message,messageType,timeOut){
     noty({layout:"topRight",text:message,type:messageType,timeout:timeOut})
@@ -138,8 +306,6 @@ function validatePhotoFormat(fileName){
         return false;
     }
 }
-
-
 
 function validateLoginForm() {
     const email = document.getElementById('email').value.trim();
