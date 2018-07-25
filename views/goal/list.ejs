@@ -76,12 +76,13 @@
                                 <div class="col l12 s12 m12">
                                     <table>
                                         <thead>
-                                            <th style="width: 1%;"> S. No. </th>
-                                            <th style="width: 40%;"> Goal </th>
+                                            <th style="width: 5%;"> S. No. </th>
+                                            <th style="width: 35%;"> Goal </th>
                                             <th style="width: 10%;"></th>
-                                            <th style="width: 15%;"> Set Date </th>
-                                            <th style="width: 20%;"> Status </th>
+                                            <th style="width: 10%;"> Set Date </th>
+                                            <th style="width: 10%;"> Status </th>
                                             <th style="width: 10%;"> Deadline </th>
+                                            <th style="width: 10%;"> Remarks </th>
                                         </thead>
                                         <tbody>
                                         <% i = 1 %>
@@ -94,19 +95,28 @@
                                             <td> <%= goal.setDate %> </td>
                                             <td> <%= goal.goalStatus %> </td>
                                             <td> <%= goal.deadline %> </td>
+                                            <td>
+                                                <a class="modal-trigger text-dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
+                                                    <i class="material-icons">visibility</i>
+                                                </a>
+                                            </td>
                                         </tr>
                                         <% if (goal.goalStatus !== "PENDING") { %>
                                         <% if (goal.goalStatus !== "REJECTED") { %>
                                         <tr>
                                             <td colspan="2">
-                                                <b> Progress </b>
+                                                <b> Progress: </b><span id="value<%= goal.id %>"><%= goal.progress %>%</span>
                                                 <form>
-                                                    <!--class="tooltipped" data-position="right" data-tooltip="goal.progress %"-->
                                                     <p class="range-field" style="margin-left: 5%; margin-right: 5%;">
                                                         <input type="range"
-                                                               id="progress<%= goal.id %>" value="" min="0" max="100"
-
-                                                               onchange="logModal(<%= goal.id %>)"/>
+                                                               id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
+                                                               <% if (goal.progress == 100) { %> disabled <% } %>
+                                                               onchange="logModal(<%= goal.id %>, <%= goal.progress %>)"/>
+                                                        <script type="text/javascript">
+                                                            document.getElementById('progress<%= goal.id%>').oninput = function() {
+                                                                document.getElementById('value<%= goal.id%>').innerHTML = this.value + '%';
+                                                            }
+                                                        </script>
                                                     </p>
                                                 </form>
                                             </td>
@@ -116,7 +126,7 @@
                                                     View Log
                                                 </a>
                                             </td>
-                                            <td>
+                                            <td colspan="2">
                                                 <% if (goal.goalStatus === "COMPLETED") { %>
                                                 <b> Award </b>
                                                 <span id="awardIcon<%= goal.id %>"></span>
@@ -127,16 +137,11 @@
                                                 </script>
                                                 <% } %>
                                             </td>
-                                            <td>
+                                            <td colspan="2">
                                                 <% if (goal.approvedDate) {%>
                                                 <b> Approved Date </b>
                                                 <%= goal.approvedDate %>
                                                 <% } %>
-                                            </td>
-                                            <td class="center-align">
-                                                <a class="modal-trigger text-dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
-                                                    <i class="material-icons">visibility</i>
-                                                </a>
                                             </td>
                                         </tr>
                                         <%
@@ -149,82 +154,87 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="personal">
-                            <div class="row">
-                                <div class="col l12 s12 m12">
-                                    <table>
-                                        <thead>
-                                            <th style="width: 1%;"> S. No. </th>
-                                            <th style="width: 40%;"> Goal </th>
-                                            <th style="width: 10%;"></th>
-                                            <th style="width: 15%;"> Set Date </th>
-                                            <th style="width: 20%;"> Status </th>
-                                            <th style="width: 10%;"> Deadline </th>
-                                        </thead>
-                                        <tbody>
-                                        <% i = 1 %>
-                                        <% goals.forEach(function (goal) {
-                                        if(goal.goalType === "PERSONAL") {
-                                        %>
-                                        <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
-                                            <td> <%= i++ %> </td>
-                                            <td> <%= goal.goal %> </td>
-                                            <td> <%= goal.setDate %> </td>
-                                            <td> <%= goal.goalStatus %> </td>
-                                            <td> <%= goal.deadline %> </td>
-                                            <td> <i class="material-icons tooltipped" data-position="top" data-tooltip="Remarks">visibility</i> </td>
-                                        </tr>
-                                        <% if (goal.goalStatus !== "PENDING") { %>
-                                        <% if (goal.goalStatus !== "REJECTED") { %>
-                                        <tr>
-                                            <td colspan="2">
-                                                <b> Progress </b>
-                                                <form>
-                                                    <p class="range-field" style="margin-left: 5%; margin-right: 5%;">
-                                                        <input type="range" class="tooltipped" data-position="right" data-tooltip="<%= goal.progress %>%"
-                                                               id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
-                                                                <% if (goal.goalStatus === 'COMPLETED') {%> disabled <% }%>
-                                                               onchange="logModal(<%= goal.id %>, <%= goal.progress %>)"/>
-                                                    </p>
-                                                </form>
-                                            </td>
-                                            <td class="center-align">
-                                                <a href="/goal/view-log?id=<%= goal.id %>"
-                                                   class="btn btn-flat dw-green-1">
-                                                    View Log
-                                                </a>
-                                            </td>
-                                            <td colspan="2">
-                                                <% if (goal.goalStatus === "COMPLETED") { %>
-                                                <b> Award </b>
-                                                <span id="awardIcon<%= goal.id %>"></span>
-                                                <script type="text/javascript">
-                                                    $(document).ready(function(){
-                                                        getAward(<%= goal.id %>, <%= goal.AwardId %>);
-                                                    });
-                                                </script>
-                                                <% } %>
-                                            </td>
-                                            <td>
-                                                <% if (goal.approvedDate) {%>
-                                                <b> Approved Date </b>
-                                                <%= goal.approvedDate %>
-                                                <% } %>
-                                            </td>
-                                            <td class="center-align">
-                                                <a class="modal-trigger text-dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
-                                                    <i class="material-icons">visibility</i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <%
-                                        }
-                                        }
-                                        }
-                                        }) %>
-                                        </tbody>
-                                    </table>
-                                </div>
+                    </div>
+                    <div id="personal">
+                        <div class="row">
+                            <div class="col l12 s12 m12">
+                                <table>
+                                    <thead>
+                                        <th style="width: 5%;"> S. No. </th>
+                                        <th style="width: 35%;"> Goal </th>
+                                        <th style="width: 10%;"></th>
+                                        <th style="width: 10%;"> Set Date </th>
+                                        <th style="width: 10%;"> Status </th>
+                                        <th style="width: 10%;"> Deadline </th>
+                                        <th style="width: 10%;">Remarks</th>
+                                    </thead>
+                                    <tbody>
+                                    <% i = 1 %>
+                                    <% goals.forEach(function (goal) {
+                                    if(goal.goalType === "PERSONAL") {
+                                    %>
+                                    <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
+                                        <td> <%= i++ %> </td>
+                                        <td colspan="2"> <%= goal.goal %> </td>
+                                        <td> <%= goal.setDate %> </td>
+                                        <td> <%= goal.goalStatus %> </td>
+                                        <td> <%= goal.deadline %> </td>
+                                        <td>
+                                            <a class="modal-trigger text-dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
+                                                <i class="material-icons">visibility</i>
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% if (goal.goalStatus !== "PENDING") { %>
+                                    <% if (goal.goalStatus !== "REJECTED") { %>
+                                    <tr>
+                                        <td colspan="2">
+                                            <b> Progress: </b><span id="value<%= goal.id %>"><%= goal.progress %>%</span>
+                                            <form>
+                                                <p class="range-field" style="margin-left: 5%; margin-right: 5%;">
+                                                    <input type="range"
+                                                           id="progress<%= goal.id %>" value="<%= goal.progress %>" min="0" max="100"
+                                                            <% if (goal.progress == 100) { %> disabled <% } %>
+                                                           onchange="logModal(<%= goal.id %>, <%= goal.progress %>)"/>
+                                                    <script type="text/javascript">
+                                                        document.getElementById('progress<%= goal.id%>').oninput = function() {
+                                                            document.getElementById('value<%= goal.id%>').innerHTML = this.value + '%';
+                                                        }
+                                                    </script>
+                                                </p>
+                                            </form>
+                                        </td>
+                                        <td class="center-align">
+                                            <a href="/goal/view-log?id=<%= goal.id %>"
+                                               class="btn btn-flat dw-green-1">
+                                                View Log
+                                            </a>
+                                        </td>
+                                        <td colspan="2">
+                                            <% if (goal.goalStatus === "COMPLETED") { %>
+                                            <b> Award </b>
+                                            <span id="awardIcon<%= goal.id %>"></span>
+                                            <script type="text/javascript">
+                                                $(document).ready(function(){
+                                                    getAward(<%= goal.id %>, <%= goal.AwardId %>);
+                                                });
+                                            </script>
+                                            <% } %>
+                                        </td>
+                                        <td colspan="2">
+                                            <% if (goal.approvedDate) {%>
+                                            <b> Approved Date </b>
+                                            <%= goal.approvedDate %>
+                                            <% } %>
+                                        </td>
+                                    </tr>
+                                    <%
+                                    }
+                                    }
+                                    }
+                                    }) %>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>

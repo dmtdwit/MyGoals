@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 const sh = require('../service/sessionHandler');
-// var md5 = require('md5');
+const md5 = require('md5');
 
 router.get('/', function (req, res, next) {
     res.redirect('/login')
@@ -71,7 +71,7 @@ router.post('/auth', function(req, res, next) {
         }
     }).then(function(result){
         if(result){
-            if(result.password === req.body.password) {
+            if(result.password === md5(req.body.password)) {
                 if(result.RoleId === 2) {
                     sh.setSession(req, result.id, result.name, result.email, "USER");
                     res.redirect('/user/dashboard');

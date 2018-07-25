@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const models = require('../models');
 const fs = require('fs');
-// var md5 = require('md5');
+const md5 = require('md5');
 const sh = require('../service/sessionHandler');
 const formidable = require('formidable');
 const nodemailer = require('nodemailer');
@@ -31,6 +31,46 @@ router.get('/create', function(req, res, next) {
             });
         });
     }
+});
+
+router.get('/password', function(req, res, next) {
+
+    sh.checkSession(req, res);
+    let sess = sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.User.findOne({
+            where: {
+                id: sess.userId
+            }
+        }).then(function(user){
+            res.render('user/password', {
+                title: 'Change Password | ' + sess.name,
+                user: user,
+                sess: sess,
+                message: '',
+                messageType: ''
+            });
+        })
+    }
+});
+
+router.post('/updatePassword', function(req, res, next){
+
+});
+
+router.get('/checkPassword', function(req, res, next){
+
+    models.User.findOne({
+        where: {
+            id: req.query['userId'],
+            password: md5(req.query['password'])
+        }
+    }).then(function(user){
+        res.send(user);
+    });
 });
 
 router.get('/edit', function(req, res, next) {
@@ -141,7 +181,7 @@ router.post('/save', function(req, res, next) {
        if(userList.length===0){
            models.User.create({
                name: req.body.firstName + " " + req.body.lastName,
-               password: req.body.email,
+               password: md5(req.body.email),
                email: req.body.email + req.body.address,
                category: req.body.category
            }).then(function(result){
@@ -370,7 +410,7 @@ router.get('/subordinates', function(req, res, next){
 });
 
 router.get('/dashboard', function(req, res, next) {
-    console.log("We are inside dashboard function");
+
     sh.checkSession(req, res);
 
     if (sh.getSession(req).role !== "USER") {

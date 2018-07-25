@@ -11,6 +11,43 @@ $(document).ready(function() {
     });
 });
 
+function confirmPassword() {
+
+    let newPassword = document.getElementById("newPassword").value;
+    let rePassword = document.getElementById("rePassword").value;
+
+    if (newPassword === rePassword) {
+        document.getElementById('resultRe').innerHTML = "" +
+            "<i class='material-icons text-dw-green-1'>done</i> <span class='text-dw-green-1'> Passwords match. </span>";
+
+    } else {
+        document.getElementById('resultRe').innerHTML = "" +
+            "<i class='material-icons red-text'>clear</i> <span class='red-text'>Passwords do not match. </span>";
+    }
+}
+
+function checkPassword(userId, password) {
+
+    $.ajax({
+        url: "/user/checkPassword",
+        type: 'GET',
+        data: {
+            userId: userId,
+            password: password
+        },
+        success: function (data) {
+            if (data) {
+                document.getElementById('resultOld').innerHTML = "" +
+                    "<i class='material-icons text-dw-green-1'>done</i> <span class='text-dw-green-1'> Password Verified. </span>";
+                    showUpdateBtn();
+            } else {
+                document.getElementById('resultOld').innerHTML = "" +
+                    "<i class='material-icons red-text'>clear</i> <span class='red-text'>Password doesn't match. </span>";
+            }
+        }
+    });
+}
+
 function getManager(userId) {
     const manager = document.getElementById('managerOf' + userId);
 
