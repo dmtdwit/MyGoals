@@ -37,6 +37,22 @@ router.get('/password', function(req, res, next) {
 
     sh.checkSession(req, res);
     let sess = sh.getSession(req);
+    const c = req.query['e'];
+    let message, type;
+
+    switch(c){
+        case "101":
+            message = 'Password successfully updated!';
+            type = 'success';
+            break;
+        case "102":
+            message = 'Update failed. Password doesn\'t match. !';
+            type = 'error';
+            break;
+        default:
+            message = '';
+            type = '';
+    }
 
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -50,8 +66,8 @@ router.get('/password', function(req, res, next) {
                 title: 'Change Password | ' + sess.name,
                 user: user,
                 sess: sess,
-                message: '',
-                messageType: ''
+                message: message,
+                messageType: type
             });
         })
     }
@@ -59,6 +75,28 @@ router.get('/password', function(req, res, next) {
 
 router.post('/updatePassword', function(req, res, next){
 
+    let sess = sh.getSession(req);
+
+    models.User.findOne({
+        where: {
+            id: sess.userId
+        }
+    }).then(function(user){
+
+        if (md5(req.body.oldPassword) === user.password) {
+
+            if (req.body.newPassword === req.body.rePassword) {
+                user.updateAttributes({
+                    password: md5(req.body.newPassword)
+                });
+                res.redirect('/user/password?e=101'); // Password successfully updated.
+            } else {
+                res.redirect('/user/password?e=102'); // Password is not verified.
+            }
+        } else {
+            res.redirect('/user/password?e=102'); // Password is not verified.
+        }
+    });
 });
 
 router.get('/checkPassword', function(req, res, next){
@@ -73,11 +111,15 @@ router.get('/checkPassword', function(req, res, next){
     });
 });
 
-router.get('/edit', function(req, res, next) {
+router.get('/edit/:id', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-        let id = req.query['id'];
+        let id = req.params.id;
+
+        if(id != sess.userId) {
+            res.redirect('/?e=102'); // Not Authorized
+        }
 
         models.User.findAll({}).then(function (users) {
             models.User.findOne({where: {id: id}}).then(function (user) {
@@ -110,7 +152,6 @@ router.post('/update', function(req, res, next) {
     sh.checkSession(req, res);
     let category, role;
     const id = req.body.id;
-    console.log("Id of user is ", id);
 
     models.User.findOne({
         where:{
@@ -164,14 +205,13 @@ router.post('/save', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-    let category, role;
+    let role;
 
     if(!req.body.role) {
         role = 2
     } else {
         role = 1
     }
-
 
     models.User.findAll({
         where:{
@@ -181,7 +221,7 @@ router.post('/save', function(req, res, next) {
        if(userList.length===0){
            models.User.create({
                name: req.body.firstName + " " + req.body.lastName,
-               password: md5(req.body.email),
+               password: md5(md5(req.body.email)),
                email: req.body.email + req.body.address,
                category: req.body.category
            }).then(function(result){
@@ -197,15 +237,15 @@ router.post('/save', function(req, res, next) {
                    from: 'rnd@deerwalk.edu.np',
                    to: result3.email,
                    subject: 'Credentials | MyGoals',
-                   text: 'Hello '+req.body.firstName+',\n\nYour account for MyGoals application has been created. \n\n\tEmail: '+result3.email+'@deerwalk.edu.np\n\tPassword: '+result3.password+'\n\nPlease use this credentials to sign in.\n\nThanks,\nMyGoals Team'
+                   text: 'Hello '+req.body.firstName+',\n\nYour account for MyGoals application has been created. \n\n\tUsername: ' + result3.email.split('@')[0] + '\n\tPassword: '+ md5(req.body.email) +'\n\nPlease use this credentials to sign in.\n\nThanks,\nMyGoals Team'
                };
-               // transporter.sendMail(mailOptions, function(error, info){
-               //     if (error) {
-               //         console.log(error);
-               //     } else {
-               //         console.log('Email sent: ' + info.response);
-               //     }
-               // });
+               transporter.sendMail(mailOptions, function(error, info){
+                   if (error) {
+                       console.log(error);
+                   } else {
+                       console.log('Email sent: ' + info.response);
+                   }
+               });
            });
            res.redirect("/user/list?e=201"); // user created successfully
        }else{
@@ -217,8 +257,9 @@ router.post('/save', function(req, res, next) {
 router.get('/profile', function(req, res, next) {
 
     sh.checkSession(req, res);
+    let sess = sh.getSession(req);
 
-    let id = req.query['id'];
+    let id = sess.userId;
     const c = req.query['e'];
     let message, type;
 
@@ -261,7 +302,7 @@ router.get('/profile', function(req, res, next) {
                         manager: manager,
                         subordinates: subordinates,
                         goals: goals,
-                        sess: sh.getSession(req),
+                        sess: sess,
                         message: message,
                         messageType: type
                     });
@@ -421,7 +462,6 @@ router.get('/dashboard', function(req, res, next) {
                 ManagerId: sh.getSession(req).userId
             }
         }).then(function(result){
-
             res.render('user/dashboard',
                 {
                     title: 'Dashboard',

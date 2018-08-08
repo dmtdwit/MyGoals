@@ -3,6 +3,17 @@ const router = express.Router();
 const models = require('../models');
 const sh = require('../service/sessionHandler');
 
+const formidable = require('formidable');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'rnd@deerwalk.edu.np',
+        pass: 'i am hero'
+    }
+});
+
 router.get('/getLogRemarks', function(req, res, next) {
 
     let logId = req.query['logId'];
@@ -23,7 +34,72 @@ router.post('/create', function(req, res, next){
         LogId: req.body.logIdForRemark,
         RemarkById: req.body.userId
     }).then(function(result){
-        res.redirect("/goal/view-log?id=" + req.body.goalId);
+        models.Log.findOne({
+            where: {
+                id: req.body.logIdForRemark
+            }
+        }).then(function(log){
+            models.Goal.findOne({
+                where: {
+                    id: log.GoalId
+                }
+            }).then(function(goal){
+                models.User.findOne({
+                    where: {
+                        id: goal.UserId
+                    }
+                }).then(function(user){
+                    models.User.findOne({
+                        where: {
+                            id: req.body.userId
+                        }
+                    }).then(function(remarkBy){
+                        if (user.id !== remarkBy.id) {
+                            let mailOptions = {
+                                from: 'rnd@deerwalk.edu.np',
+                                to: user.email,
+                                subject: 'New remark on log | MyGoals',
+                                text: 'Hello '+ user.name + ',\n\n' +
+                                remarkBy.name + ' made a log remark "' + req.body.remark + '" on "' + log.remark + '". \n\n' +
+                                'Have a look at http://localhost:3000/goal/log/show/' + req.body.goalId + '\n\n' +
+                                'My Goals Team'
+                            };
+                            transporter.sendMail(mailOptions, function(error, info){
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    console.log('Email sent: ' + info.response);
+                                }
+                            });
+                        } else {
+                            models.User.findOne({
+                                where: {
+                                    id: user.ManagerId
+                                }
+                            }).then(function(manager){
+                                let mailOptions = {
+                                    from: 'rnd@deerwalk.edu.np',
+                                    to: manager.email,
+                                    subject: 'New remark on log | MyGoals',
+                                    text: 'Hello '+ manager.name + ',\n\n' +
+                                    remarkBy.name + ' made a log remark "' + req.body.remark + '" on "' + log.remark + '". \n\n' +
+                                    'Have a look at http://localhost:3000/goal/log/show/' + req.body.goalId + '\n\n' +
+                                    'My Goals Team'
+                                };
+                                transporter.sendMail(mailOptions, function(error, info){
+                                    if (error) {
+                                        console.log(error);
+                                    } else {
+                                        console.log('Email sent: ' + info.response);
+                                    }
+                                });
+                            });
+                        }
+                    });
+                    res.redirect("/goal/log/show/" + req.body.goalId);
+                })
+            })
+        });
     });
 });
 

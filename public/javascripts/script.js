@@ -16,13 +16,19 @@ function confirmPassword() {
     let newPassword = document.getElementById("newPassword").value;
     let rePassword = document.getElementById("rePassword").value;
 
-    if (newPassword === rePassword) {
+    if (newPassword !== '' && newPassword === rePassword) {
         document.getElementById('resultRe').innerHTML = "" +
             "<i class='material-icons text-dw-green-1'>done</i> <span class='text-dw-green-1'> Passwords match. </span>";
-
+        let correctPassword = document.getElementById('correctPassword').value;
+        if (correctPassword){
+            document.getElementById('updatePasswordBtn').disabled = false;
+        } else {
+            document.getElementById('updatePasswordBtn').disabled = true;
+        }
     } else {
         document.getElementById('resultRe').innerHTML = "" +
             "<i class='material-icons red-text'>clear</i> <span class='red-text'>Passwords do not match. </span>";
+        document.getElementById('updatePasswordBtn').disabled = true;
     }
 }
 
@@ -38,11 +44,14 @@ function checkPassword(userId, password) {
         success: function (data) {
             if (data) {
                 document.getElementById('resultOld').innerHTML = "" +
-                    "<i class='material-icons text-dw-green-1'>done</i> <span class='text-dw-green-1'> Password Verified. </span>";
-                    showUpdateBtn();
+                    "<i class='material-icons text-dw-green-1'>done</i> <span class='text-dw-green-1'> Password Verified. </span>" +
+                    "<input type='hidden' id='correctPassword' value='1'>";
+                confirmPassword();
             } else {
                 document.getElementById('resultOld').innerHTML = "" +
-                    "<i class='material-icons red-text'>clear</i> <span class='red-text'>Password doesn't match. </span>";
+                    "<i class='material-icons red-text'>clear</i> <span class='red-text'>Password doesn't match. </span>" +
+                    "<input type='hidden' id='correctPassword' value='0'>";
+                document.getElementById('updatePasswordBtn').disabled = true;
             }
         }
     });
@@ -143,7 +152,7 @@ function getGoalList(userId) {
                     "<td>" + data.goalType + "</td>" +
                     "<td>" + data.goalStatus + "</td>" +
                     "<td>" + data.progress + "%</td>" +
-                    "<td><a class='text-dw-green-2' href='/goal/view-log?id=" + data.id + "'><i class='material-icons'>visibility</i></a></td>" +
+                    "<td><a class='text-dw-green-2' href='/goal/log/show/" + data.id + "'><i class='material-icons'>visibility</i></a></td>" +
                     "<td><a class='modal-trigger text-dw-green-1' id='triggerRemarkModal' href='#remarkModal' onclick='getRemarks("+data.id+")'>" +
                         "<i class='material-icons'>visibility</i></a>" +
                     "</td>";
@@ -199,6 +208,85 @@ function getAllSubordinates(userId, managerName) {
                 getGoalList(data.id);
                 $('.collapsible').collapsible();
                 getAllSubordinates(data.id, data.name);
+            });
+        },
+        error: function() {
+            console.log("No subordinate");
+        }
+    })
+}
+
+function getGoalListForPrint(userId) {
+
+    let tableBody = document.getElementById('subordinateGoalsOf' + userId);
+
+    $.ajax({
+        url: "/goal/getAllGoals",
+        type: 'GET',
+        data: {
+            userId: userId
+        },
+        success: function(result) {
+            $.each(result, function(index, data) {
+                tableBody.insertRow(-1).innerHTML = "" +
+                    "<td>" + ++index + "</td>" +
+                    "<td>" + data.goal + "</td>" +
+                    "<td>" + data.goalType + "</td>" +
+                    "<td>" + data.goalStatus + "</td>" +
+                    "<td>" + data.progress + "%</td>";
+                tableBody.insertRow(-1).innerHTML = "<td>Remarks</td>" +
+                    "<td colspan='4'><textarea rows='3' cols='120' disabled></textarea></td>";
+            });
+            if(!result.length) {
+                tableBody.parentNode.parentNode.innerHTML = "<h5>No Goals</h5>";
+            }
+        }
+    });
+}
+
+function getAllSubordinatesForPrint(userId, managerName) {
+
+    let managerDiv = document.getElementById(managerName);
+
+    $.ajax({
+        url: '/user/getAllSubordinates',
+        type: 'GET',
+        data: {
+            userId: userId
+        },
+        success: function(result) {
+
+            $.each(result, function(index, data){
+                let ul = document.createElement('ul');
+                ul.classList.add('collapsible');
+                ul.setAttribute('type', 'none');
+                managerDiv.after(ul);
+                ul.innerHTML = "<li class='active'>" +
+                    "<div class='collapsible-header dw-blue-1 white-text'>" +
+                    "<span class='tab-header'><b> " +
+                    data.name + "\'s Goals</b></span>" +
+                    "</div>" +
+                    "<div class='collapsible-body'>" +
+                    "<div class='row' id='" + data.name + "'>" +
+                    "<div class='col l12'>" +
+                    "<table class='white'>" +
+                        "<thead>" +
+                            "<th style='width: 5%;'> </th>" +
+                            "<th style='width: 60%;'> Goal </th>" +
+                            "<th style='width: 10%;'> Type </th>" +
+                            "<th style='width: 10%;'> Status </th>" +
+                            "<th style='width: 5%;'> Progress </th>" +
+                        "</thead>" +
+                        "<tbody id='subordinateGoalsOf" + data.id + "'>" +
+                        "</tbody>" +
+                    "</table>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>" +
+                    "</li>";
+                getGoalListForPrint(data.id);
+                $('.collapsible').collapsible();
+                getAllSubordinatesForPrint(data.id, data.name);
             });
         },
         error: function() {

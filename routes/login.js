@@ -12,6 +12,7 @@ router.get('/', function (req, res, next) {
 router.get('/login', function(req, res, next) {
     const sess = sh.getSession(req);
     let c = req.query['e'];
+    let returnTo = req.query['returnTo'];
     let message, type;
 
     switch(c) {
@@ -31,6 +32,10 @@ router.get('/login', function(req, res, next) {
             message = "You are not authorized to view this page.";
             type = "error";
             break;
+        case "101":
+            message = "You are not logged in.";
+            type = "error";
+            break;
         default:
             message = "";
             type = "";
@@ -41,7 +46,8 @@ router.get('/login', function(req, res, next) {
             {
                 title: 'Login',
                 message: message,
-                messageType: type
+                messageType: type,
+                returnTo: returnTo
             }
         );
     }else{
@@ -55,7 +61,8 @@ router.get('/login', function(req, res, next) {
                 {
                     title: 'Login',
                     message: message,
-                    messageType: messageType
+                    messageType: messageType,
+                    returnTo: returnTo
                 }
             );
         }
@@ -74,10 +81,18 @@ router.post('/auth', function(req, res, next) {
             if(result.password === md5(req.body.password)) {
                 if(result.RoleId === 2) {
                     sh.setSession(req, result.id, result.name, result.email, "USER");
-                    res.redirect('/user/dashboard');
+                    if(req.body.returnTo){
+                        res.redirect(req.body.returnTo);
+                    } else {
+                        res.redirect('/user/dashboard');
+                    }
                 } else {
                     sh.setSession(req, result.id, result.name, result.email, "ADMIN");
-                    res.redirect('/admin/dashboard');
+                    if(req.body.returnTo){
+                        res.redirect(req.body.returnTo);
+                    } else {
+                        res.redirect('/admin/dashboard');
+                    }
                 }
             } else {
                 res.redirect('login?e=401'); // Email/Password do not match

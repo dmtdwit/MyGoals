@@ -6,6 +6,17 @@ const Sequelize = require('sequelize');
 
 const Op = Sequelize.Op;
 
+const formidable = require('formidable');
+const nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+        user: 'rnd@deerwalk.edu.np',
+        pass: 'i am hero'
+    }
+});
+
 router.get('/create', function(req, res, next) {
 
     sh.checkSession(req, res);
@@ -82,6 +93,35 @@ router.post('/save', function(req, res, next) {
                             progress: 0.0
                         }).then(function (result) {
                             return result.setUser(req.body.id);
+                        }).then(function(result){
+                            models.User.findOne({
+                                where: {
+                                    id: req.body.id
+                                }
+                            }).then(function(user){
+                                models.User.findOne({
+                                    where: {
+                                        id: user.ManagerId
+                                    }
+                                }).then(function(manager){
+                                    let mailOptions = {
+                                        from: 'rnd@deerwalk.edu.np',
+                                        to: manager.email,
+                                        subject: user.name + ' created a new goal | MyGoals',
+                                        text: 'Hello '+ manager.name + ',\n\n' +
+                                            user.name + ' has created a new goal "' + req.body.goal + '". \n\n' +
+                                            'Have a look at http://localhost:3000/goal/show/' + result.id + '\n\n' +
+                                            'My Goals Team'
+                                    };
+                                    transporter.sendMail(mailOptions, function(error, info){
+                                        if (error) {
+                                            console.log(error);
+                                        } else {
+                                            console.log('Email sent: ' + info.response);
+                                        }
+                                    });
+                                });
+                            });
                         });
                     }
                 });
@@ -91,22 +131,108 @@ router.post('/save', function(req, res, next) {
     });
 });
 
+router.get('/show/:id', function(req, res, next) {
+
+    sh.checkSession(req, res);
+    let sess = sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        let goalId = req.params.id;
+
+        models.Goal.findOne({
+            where: {
+                id: goalId
+            }
+        }).then(function(goal){
+            models.User.findOne({
+                where: {
+                    id: goal.UserId
+                }
+            }).then(function(user){
+
+                if (sess.userId != user.id) {
+                    if( sess.userId != user.ManagerId) {
+                        res.redirect('/user/dashboard');
+                    }
+                }
+
+                // if (sess.userId != user.ManagerId) {
+                //     if (sess.userId != user.id) {
+                //         res.redirect('/user/dashboard');
+                //     }
+                // }
+
+                    res.render('goal/show', {
+                        title: 'Goal | My Goals',
+                        goal: goal,
+                        user: user,
+                        sess: sh.getSession(req)
+                    });
+            });
+        });
+    }
+});
+
 router.post('/log', function(req, res, next){
+
+    let sess = sh.getSession(req);
+
+    if (req.body.progressValue > 100 || req.body.progressValue < 0) {
+        res.redirect('/goal/list?e=104'); // Invalid progress update
+    }
 
     models.Log.create({
         remark: req.body.progressRemark,
         progressMade: req.body.progressMade
     }).then(function (result) {
         return result.setGoal(req.body.progressGoalId);
-    }).then(function(){
-        res.redirect("/goal/view-log?id="+ req.body.progressGoalId +"&e=201"); // Progress successfully updated
+    }).then(function(result){
+
+        models.User.findOne({
+            where: {
+                id: sess.userId
+            }
+        }).then(function(user){
+            models.User.findOne({
+                where: {
+                    id: user.ManagerId
+                }
+            }).then(function(manager){
+                models.Goal.findOne({
+                    where: { id: log.GoalId}
+                }).then(function(goal){
+                    let mailOptions = {
+                        from: 'rnd@deerwalk.edu.np',
+                        to: manager.email,
+                        subject: user.name + ' updated his progress | MyGoals',
+                        text: 'Hello '+ manager.name + ',\n\n' +
+                        user.name + ' has updated his progress log with remark "' + req.body.progressRemark + '" (' +
+                        req.body.progressMade + '%). \n\n' +
+                        'Have a look at http://localhost:3000/goal/log/show/' + goal.id + '\n\n' +
+                        'MyGoals Team'
+                    };
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+                });
+            })
+        });
+
+        res.redirect("/goal/log/show/"+ req.body.progressGoalId +"?e=201"); // Progress successfully updated
     })
 });
 
-router.get('/view-log', function(req, res, next) {
+router.get('/log/show/:id', function(req, res, next) {
 
     sh.checkSession(req, res);
     let sess = sh.getSession(req);
+    let id = req.params.id;
     let c = req.query['e'];
     let message, type;
 
@@ -120,30 +246,31 @@ router.get('/view-log', function(req, res, next) {
             type = "";
     }
 
-    if (sess.role !== "USER") {
-        res.redirect('/?e=102'); // Not authorized
-    } else {
-        models.Goal.findOne({
-            where: {
-                id: req.query['id']
-            }
-        }).then(function(goal){
-            models.Log.findAll({
-                where: {
-                    GoalId: req.query['id']
-                }
-            }).then(function (logs) {
-                res.render('goal/log', {
-                    title: 'Log | ' + goal.goal,
-                    goal: goal,
-                    logs: logs,
-                    sess: sess,
-                    message: message,
-                    messageType: type
+            if (sess.role !== "USER") {
+                res.redirect('/?e=102'); // Not authorized
+            } else {
+                models.Goal.findOne({
+                    where: {
+                        id: id
+                    }
+                }).then(function (goal) {
+                    models.Log.findAll({
+                        where: {
+                            GoalId: id
+                        }
+                    }).then(function (logs) {
+                        res.render('goal/log', {
+                            title: 'Goal Log',
+                            goal: goal,
+                            logs: logs,
+                            sess: sess,
+                            message: message,
+                            messageType: type
+                        });
+                    });
                 });
-            });
-        });
-    }
+            }
+
 });
 
 router.post('/award', function(req, res, next) {
@@ -154,9 +281,32 @@ router.post('/award', function(req, res, next) {
         if(goal){
             goal.updateAttributes({
                 AwardId: req.body.award
+            }).then(function(goal){
+                models.User.findOne({
+                    where: {
+                        id: goal.UserId
+                    }
+                }).then(function(user){
+                    let mailOptions = {
+                        from: 'rnd@deerwalk.edu.np',
+                        to: user.email,
+                        subject: 'You have been given an award | MyGoals',
+                        text: 'Hello '+ user.name + ',\n\n' +
+                        'You have been given an award for your goal "' + goal.goal + '". \n\n' +
+                        'Have a look at http://localhost:3000/goal/show/' + goal.id + '\n\n' +
+                        'My Goals Team'
+                    };
+                    transporter.sendMail(mailOptions, function(error, info){
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            console.log('Email sent: ' + info.response);
+                        }
+                    });
+                    res.redirect('/goal/subordinate/' + req.body.userId + '?e=101'); // Action successfully completed
+                })
             });
         }
-        res.redirect('/goal/sub-list?id=' + req.body.userId);
     });
 });
 
@@ -178,6 +328,10 @@ router.get('/list', function(req, res, next) {
             break;
         case "103":
             message = "You can only have 2 organizational goals running/pending.";
+            type = "warning";
+            break;
+        case "104":
+            message = "Invalid progress value.";
             type = "warning";
             break;
         case "402":
@@ -229,6 +383,10 @@ router.get('/updateProgress', function(req, res, next){
     let id = req.query['id'];
     let progress = req.query['progress'];
 
+    if (progress > 100 || progress < 0) {
+        res.redirect('/list?e=104'); // Invalid progress update
+    }
+
     models.Goal.find({where:{
         id: id
     }}).then(function(goal) {
@@ -253,7 +411,7 @@ router.get('/action', function(req, res, next) {
 
     let id = req.query['g'];
     let action = req.query['q'];
-    let user = req.query['u'];
+    let userId = req.query['u'];
     let sess = sh.getSession(req);
 
     if (sess.role !== "USER") {
@@ -268,20 +426,54 @@ router.get('/action', function(req, res, next) {
                 goal.updateAttributes({
                     goalStatus: action,
                     approvedDate: new Date()
-                }).then(function () {
-                    res.redirect('/goal/sub-list?id=' + user);
+                }).then(function (goal) {
+                    models.User.findOne({
+                        where: {
+                            id: goal.UserId
+                        }
+                    }).then(function(user){
+                        let mailOptions = {
+                            from: 'rnd@deerwalk.edu.np',
+                            to: user.email,
+                            subject: 'Your goal has been ' + action + ' | MyGoals',
+                            text: 'Hello '+ user.name + ',\n\n' +
+                            'Your goal "' + goal.goal + '" has been ' + action + '. \n\n' +
+                            'Have a look at http://localhost:3000/goal/show/' + goal.id + '\n\n' +
+                            'My Goals Team'
+                        };
+                        transporter.sendMail(mailOptions, function(error, info){
+                            if (error) {
+                                console.log(error);
+                            } else {
+                                console.log('Email sent: ' + info.response);
+                            }
+                        });
+                        res.redirect('/goal/subordinate/' + userId + '?e=101'); // Action successfully completed
+                    });
                 });
             }
         });
     }
 });
 
-router.get('/sub-list', function(req, res, next) {
+router.get('/subordinate/:id', function(req, res, next) {
 
     sh.checkSession(req, res);
 
-    let id = req.query['id'];
+    let id = req.params.id;
     let sess = sh.getSession(req);
+    let c = req.query['e'];
+    let message, type;
+
+    switch(c) {
+        case "101":
+            message = "Action successfully completed.";
+            type = "success";
+            break;
+        default:
+            message = '';
+            type = '';
+    }
     
     if (sess.role !== "USER") {
         res.redirect('/?e=102'); // Not authorized
@@ -300,14 +492,16 @@ router.get('/sub-list', function(req, res, next) {
                     title: subordinate.name + ' | Subordinate Goals',
                     goals: result,
                     subordinate: subordinate,
-                    sess: sess
+                    sess: sess,
+                    message: message,
+                    messageType: type
                 })
             });
         });
     }
 });
 
-router.get('/all-subordinate-goals', function(req, res, next) {
+router.get('/allSubordinates', function(req, res, next) {
 
     sh.checkSession(req, res);
 
@@ -322,6 +516,29 @@ router.get('/all-subordinate-goals', function(req, res, next) {
             }
         }).then(function (subordinates) {
             res.render('goal/all-subordinate-goals',{
+                title: "Subordinates' Goals",
+                subordinates: subordinates,
+                sess: sess
+            })
+        })
+    }
+});
+
+router.get('/print', function(req, res, next) {
+
+    sh.checkSession(req, res);
+
+    let sess = sh.getSession(req);
+
+    if (sess.role !== "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
+        models.User.findAll({
+            where: {
+                ManagerId: sess.userId
+            }
+        }).then(function (subordinates) {
+            res.render('goal/print',{
                 title: "Subordinates' Goals",
                 subordinates: subordinates,
                 sess: sess

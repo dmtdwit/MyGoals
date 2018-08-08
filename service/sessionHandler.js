@@ -1,3 +1,5 @@
+const md5 = require('md5');
+
 module.exports = {
 
     setSession: function(req, id, name, email, role) {
@@ -15,7 +17,7 @@ module.exports = {
     },
     checkSession: function (req, res) {
         if (req.session.name === undefined) {
-            res.redirect('/?e=101'); // Not logged in
+            res.redirect('/login?e=101&returnTo='+ encodeURIComponent(req.originalUrl)); // Not logged in
         }
     }
 };

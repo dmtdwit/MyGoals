@@ -1,0 +1,54 @@
+<% include ../layouts/header.ejs %>
+<body>
+<br><br>
+<main>
+    <p> Press <b>Ctrl + p</b> to print </p>
+    <div class="container-fluid">
+        <h4 class="center-align"> ALL SUBORDINATES </h4>
+        </div>
+        <div class="row">
+            <div class="col l12">
+                <%  i = 1
+                subordinates.forEach(function (subordinate) { %>
+
+                <ul class="collapsible" type="none">
+                    <li class="active">
+                        <div class="collapsible-header dw-blue-1 white-text">
+                            <span class="tab-header"> <b><%= subordinate.name %>'s Goals </b></span>
+                        </div>
+                        <div class="collapsible-body">
+                            <div class="row" id="<%= subordinate.name %>">
+                                <div class="col l12">
+                                    <table class="white">
+                                        <thead>
+                                            <th style="width: 5%;"> </th>
+                                            <th style="width: 60%;"> Goal </th>
+                                            <th style="width: 10%;"> Type </th>
+                                            <th style="width: 10%;"> Status </th>
+                                            <th style="width: 5%;"> Progress </th>
+                                        </thead>
+                                        <tbody id="subordinateGoalsOf<%= subordinate.id %>">
+                                            <script type="text/javascript">
+                                                $(document).ready(function(){
+                                                    getGoalListForPrint(<%= subordinate.id %>);
+                                                });
+                                            </script>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+                <script type="text/javascript">
+                    $(document).ready(function(){
+                        getAllSubordinatesForPrint(<%= subordinate.id %>, "<%= subordinate.name %>");
+                    });
+                </script>
+                <% }) %>
+            </div>
+        </div>
+    </div>
+
+</main>
+</body>

@@ -1,0 +1,97 @@
+<% include ../layouts/header.ejs %>
+<% include ../layouts/navbar.ejs %>
+
+<div id="remarkModal" class="modal">
+    <div class="modal-content">
+        <h4>
+            Remarks <i class="material-icons modal-close" style="position: relative; float: right;" onclick="document.getElementById('allRemarks').innerHTML = '' ">close</i>
+        </h4>
+        <form action="/remark/create" method="post">
+            <input type="hidden" id="goalIdForRemark" name="goalIdForRemark">
+            <input type="hidden" id="userId" name="userId" value="<%= sess.userId %>">
+            <input type="hidden" id="list" name="list" value="true">
+            <ul class="collection" id="allRemarks"></ul>
+            <ul class="collection">
+                <li class="collection-item avatar">
+                    <i class='material-icons circle dw-blue-1'>comment</i>
+                    <input name="remark" type="text" id="remark" autocomplete="off" placeholder="Write your remark here" autofocus>
+                </li>
+            </ul>
+    </div>
+    <div class="modal-footer">
+        <button class="modal-close waves-effect waves-green btn-flat dw-green-1 white-text align-center">
+            Add Remark
+        </button>
+    </div>
+    </form>
+</div>
+<body class="bg">
+<br><br>
+<main>
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col l10 m10 s10 offset-s1 offset-m1 offset-l1">
+
+                <div class="card">
+                    <div class="card-tabs">
+                        <ul class="tabs tabs-fixed-width">
+                            <li class="tab dw-blue-1">
+                                <a href="#goal" class="left-align white-text">
+                                    <h5><%= user.name %>'s Goal</h5>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="card-content">
+                        <div id="goal">
+                            <div class="row">
+                                <table>
+                                    <tr>
+                                        <td colspan="4"> <h4 class="center-align"> <%= goal.goal %> </h4></td>
+                                    </tr>
+                                    <tr>
+                                        <td> <b>SET DATE</b> </td> <td> <%= goal.setDate %> </td>
+                                        <td> <b>DEADLINE</b> </td> <td> <%= goal.deadline %> </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <b>PROGRESS</b> </td> <td> <%= goal.progress %>% </td>
+                                        <td> <b>STATUS</b> </td> <td> <%= goal.goalStatus %> </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <a class="modal-trigger btn text-dw-green-1 dw-green-1" href="#remarkModal" onclick="getRemarks(<%= goal.id %>)">
+                                                REMARKS
+                                            </a>
+                                        </td>
+                                        <td>
+                                            <% if (goal.goalStatus !== "PENDING") { %>
+                                            <a href="/goal/log/show/<%= goal.id %>" class="btn dw-green-1"> LOG </a>
+                                            <% } %>
+                                        </td>
+                                        <% if (sess.userId === user.ManagerId && goal.goalStatus === "PENDING") { %>
+                                        <td> <b> ACTION </b> </td>
+                                        <td>
+                                            <a href="/goal/action?g=<%= goal.id %>&q=APPROVED&u=<%= user.id %>" class="btn btn-floating">
+                                                <i class="material-icons dw-green-1 tooltipped"
+                                                   data-position="top" data-tooltip="Approve">check</i>
+                                            </a>
+                                            <a href="/goal/action?g=<%= goal.id %>&q=REJECTED&u=<%= user.id %>" class="btn btn-floating">
+                                                <i class="material-icons red darken-1 tooltipped"
+                                                   data-position="top" data-tooltip="Reject">clear</i>
+                                            </a>
+                                        </td>
+                                        <% } %>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+</body>
+
+<% include ../layouts/footer.ejs %>

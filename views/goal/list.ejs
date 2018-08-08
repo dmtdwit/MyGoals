@@ -7,12 +7,12 @@
     }
 </style>
 <div id="logModal" class="modal" style="z-index: 10000; margin-top: 10%;">
-    <form action="log" method="post">
+    <form action="/goal/log" method="post">
         <div class="modal-content">
             <h4>Progress Update Log</h4>
                 <input type="hidden" id="progressGoalId" name="progressGoalId">
-                <input type="hidden" id="progressValue">
-                <input type="hidden" id="progressMade">
+                <input type="hidden" id="progressValue" name="progressValue">
+                <input type="hidden" id="progressMade" name="progressMade">
                 <textarea class="materialize-textarea" id="progressRemark" name="progressRemark">
                 </textarea>
                 <label for="progressRemark">Remark</label>
@@ -91,7 +91,7 @@
                                         %>
                                         <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
                                             <td> <%= i++ %> </td>
-                                            <td colspan="2"> <%= goal.goal %> </td>
+                                            <td colspan="2"> <a href="/goal/show/<%= goal.id %>"> <%= goal.goal %> </a></td>
                                             <td> <%= goal.setDate %> </td>
                                             <td> <%= goal.goalStatus %> </td>
                                             <td> <%= goal.deadline %> </td>
@@ -121,7 +121,7 @@
                                                 </form>
                                             </td>
                                             <td class="center-align">
-                                                <a href="/goal/view-log?id=<%= goal.id %>"
+                                                <a href="/goal/log/show/<%= goal.id %>"
                                                    class="btn btn-flat dw-green-1">
                                                     View Log
                                                 </a>
@@ -175,7 +175,7 @@
                                     %>
                                     <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
                                         <td> <%= i++ %> </td>
-                                        <td colspan="2"> <%= goal.goal %> </td>
+                                        <td colspan="2"> <a href="/goal/show/<%= goal.id %>"> <%= goal.goal %> </a></td>
                                         <td> <%= goal.setDate %> </td>
                                         <td> <%= goal.goalStatus %> </td>
                                         <td> <%= goal.deadline %> </td>
@@ -205,7 +205,7 @@
                                             </form>
                                         </td>
                                         <td class="center-align">
-                                            <a href="/goal/view-log?id=<%= goal.id %>"
+                                            <a href="/goal/log/show/<%= goal.id %>"
                                                class="btn btn-flat dw-green-1">
                                                 View Log
                                             </a>

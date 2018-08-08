@@ -48,7 +48,7 @@
                                     <td colspan="2"> <h4 class="center-align">Goal: <%= goal.goal %> </h4></td>
                                 </tr>
                                 <tr>
-                                    <td> <b>Progress:</b>
+                                    <td> <b>Progress: </b><%= goal.progress %>%
                                         <form>
                                             <p class="range-field tooltipped" style="margin-left: 5%; margin-right: 5%;" data-position="right" data-tooltip="<%= goal.progress %>%">
                                                 <input type="range" value="<%= goal.progress %>" min="0" max="100" disabled/>
@@ -74,7 +74,7 @@
                                     <tr>
                                         <td> <%= i++ %></td>
                                         <td> <%= log.remark %></td>
-                                        <td> <%= log.progressMade %></td>
+                                        <td> <%= log.progressMade %>%</td>
                                         <td> <%= log.updatedAt.toDateString() %></td>
                                         <td> <%= log.updatedAt.toTimeString().replace(/.*(\d{2}:\d{2}:\d{2}).*/, "$1"); %></td>
                                         <td class="center-align">
