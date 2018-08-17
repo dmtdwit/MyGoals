@@ -14,7 +14,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         category: {
-            type: DataTypes.ENUM(['EMPLOYEE','STUDENT']),
+            type: DataTypes.ENUM(['FULL_TIME','PART_TIME', 'INTERN']),
             allowNull: false
         },
         imageName: {

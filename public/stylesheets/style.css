@@ -75,6 +75,28 @@ main {
     border-radius: 50%;
 }
 
+.select-wrapper ul li  img {
+    border-radius: 100%;
+}
+.tabs .tab a {
+    padding: 0 !important;
+}
+.card-tabs i {
+    position: relative;
+    top: 4px;
+    left: 4px;
+}
+ .tab-header {
+     position: relative;
+     left: 4px;
+ }
+
+.heading {
+    background-color: #0f5288;
+    padding: 14px;
+    color: #fff;
+    margin: 11px;
+}
 
 /* Custom Colors */
 

@@ -244,6 +244,7 @@ function getGoalListForPrint(userId) {
     });
 }
 
+
 function getAllSubordinatesForPrint(userId, managerName) {
 
     let managerDiv = document.getElementById(managerName);

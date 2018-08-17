@@ -89,7 +89,7 @@
                                         <% goals.forEach(function (goal) {
                                             if(goal.goalType === "ORGANIZATIONAL") {
                                         %>
-                                        <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
+                                        <tr style="border-bottom: 0px">
                                             <td> <%= i++ %> </td>
                                             <td colspan="2"> <a href="/goal/show/<%= goal.id %>"> <%= goal.goal %> </a></td>
                                             <td> <%= goal.setDate %> </td>
@@ -173,7 +173,7 @@
                                     <% goals.forEach(function (goal) {
                                     if(goal.goalType === "PERSONAL") {
                                     %>
-                                    <tr class="<% if(goal.goalStatus==="REJECTED"){%>red darken-5<% } else { %> dw-blue-5<% }%>" style="border-bottom: 0px">
+                                    <tr style="border-bottom: 0px">
                                         <td> <%= i++ %> </td>
                                         <td colspan="2"> <a href="/goal/show/<%= goal.id %>"> <%= goal.goal %> </a></td>
                                         <td> <%= goal.setDate %> </td>

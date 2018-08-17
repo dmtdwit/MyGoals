@@ -79,7 +79,7 @@ router.post('/auth', function(req, res, next) {
     }).then(function(result){
         if(result){
             if(result.password === md5(req.body.password)) {
-                if(result.RoleId === 2) {
+                if(result.RoleId === 3) {
                     sh.setSession(req, result.id, result.name, result.email, "USER");
                     if(req.body.returnTo){
                         res.redirect(req.body.returnTo);

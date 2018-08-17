@@ -114,22 +114,22 @@ router.get('/checkPassword', function(req, res, next){
 router.get('/edit/:id', function(req, res, next) {
 
     sh.checkSession(req, res);
+    let sess = sh.getSession(req);
 
-        let id = req.params.id;
-
-        if(id != sess.userId) {
-            res.redirect('/?e=102'); // Not Authorized
-        }
-
+    let id = req.params.id;
+    console.log(sess.role);
+    if (sess.role == "USER") {
+        res.redirect('/?e=102'); // Not authorized
+    } else {
         models.User.findAll({}).then(function (users) {
             models.User.findOne({where: {id: id}}).then(function (user) {
                 models.User.findOne({
-                    where:{
+                    where: {
                         id: user.ManagerId
                     }
                 }).then(function (manager) {
                     let managerId = 0;
-                    if(manager!==null){
+                    if (manager !== null) {
                         managerId = manager.id
                     }
                     res.render('user/edit', {
@@ -139,12 +139,12 @@ router.get('/edit/:id', function(req, res, next) {
                         user: user,
                         users: users,
                         managerId: managerId,
-                        sess: sh.getSession(req)
+                        sess: sess
                     });
                 });
             });
         });
-
+    }
 });
 
 router.post('/update', function(req, res, next) {
@@ -158,15 +158,10 @@ router.post('/update', function(req, res, next) {
             id: id
         }
     }).then(function (user) {
-        if(!req.body.role) {
+        if(req.body.role) {
             role = 2
         } else {
-            role = 1
-        }
-        if(!req.body.category) {
-            category = "EMPLOYEE"
-        } else {
-            category = "STUDENT"
+            role = 3
         }
         console.log("User is ", user);
         if(user){
@@ -180,7 +175,7 @@ router.post('/update', function(req, res, next) {
                         name: req.body.firstName + " " + req.body.lastName,
                         password: req.body.email,
                         email: req.body.email,
-                        category: category
+                        category: req.body.category
                     }).then(function(result){
                         return result.setRole(role);
                     }).then(function(resultTwo){
@@ -208,9 +203,9 @@ router.post('/save', function(req, res, next) {
     let role;
 
     if(!req.body.role) {
-        role = 2
+        role = 3
     } else {
-        role = 1
+        role = 2
     }
 
     models.User.findAll({

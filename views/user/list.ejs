@@ -10,7 +10,7 @@
             <div class="card-tabs">
                 <ul class="tabs tabs-fixed-width">
                     <li class="tab dw-blue-1">
-                        <a href="#user" class="left-align white-text">
+                        <a class="left-align white-text">
                             <i class="material-icons">person</i> <span class="tab-header"> All Users </span>
                         </a>
                     </li>
@@ -49,7 +49,7 @@
                             <% } %>
                         </td>
                         <td>
-                            <a href="/user/edit?id=<%= user.id %>" class="btn-floating btn waves-effect waves-light dw-green-1">
+                            <a href="/user/edit/<%= user.id %>" class="btn-floating btn waves-effect waves-light dw-green-1">
                                 <i class="material-icons">edit</i>
                             </a>
                         </td>

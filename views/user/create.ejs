@@ -13,7 +13,7 @@
                     <div class="card-tabs">
                         <ul class="tabs tabs-fixed-width">
                             <li class="tab dw-blue-1">
-                                <a href="#create" class="left-align white-text">
+                                <a class="left-align white-text">
                                     Create new user
                                 </a>
                             </li>
@@ -58,7 +58,7 @@
                                                 <% users.forEach(function(user){
                                                     if(user.RoleId == 2) {
                                                 %>
-                                                <option data-icon="../profilePictures/<%=user.imageName%>" onerror="this.src='../profilePictures/default.jpg'" class="left circle" value="<%= user.id %>">
+                                                <option data-icon="../profilePictures/<%=user.imageName%>" class="left circle" value="<%= user.id %>">
                                                     <%= user.name %>
                                                 </option>
                                                 <% }

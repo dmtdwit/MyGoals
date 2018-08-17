@@ -12,7 +12,7 @@
                     <div class="card-tabs">
                         <ul class="tabs tabs-fixed-width">
                             <li class="tab dw-blue-1">
-                                <a href="#create" class="left-align white-text">
+                                <a class="left-align white-text">
                                     Upload New Profile Photo
                                 </a>
                             </li>
@@ -21,7 +21,7 @@
                     <div class="card-content">
                         <div id="create">
                             <div class="row">
-                                <form method="post" enctype="multipart/form-data" action="savePP" onsubmit="return validateProfilePicture();">
+                                <form method="post" enctype="multipart/form-data" action="/user/savePP" onsubmit="return validateProfilePicture();">
                                     <label for="profilePicture">Profile Picture</label>
                                     <div class="input-field col s12">
                                         <i class="material-icons prefix">photo</i>

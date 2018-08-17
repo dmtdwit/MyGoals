@@ -13,7 +13,7 @@
                     <div class="card-tabs">
                         <ul class="tabs tabs-fixed-width">
                             <li class="tab dw-blue-1">
-                                <a href="#edit" class="left-align white-text">
+                                <a class="left-align white-text">
                                     Edit user
                                 </a>
                             </li>
@@ -23,7 +23,7 @@
                         <div id="edit">
                             <div class="row">
 
-                                <form class="col s12" action="update" method="POST" autocomplete="off" onsubmit="return validateUser();">
+                                <form class="col s12" action="/user/update" method="POST" autocomplete="off" onsubmit="return validateUser();">
                                     <div class="row">
                                         <input type="hidden" value="<%=user.id%>" name="id" id="id"/>
                                         <div class="input-field col l6 m6 s12">
@@ -80,15 +80,33 @@
                                         </div>
 
                                         <div class="input-field col l6 m6 s12 center-align">
-                                            <div class="switch">
-                                                Employee
+                                            <p>
                                                 <label>
-                                                    <input type="checkbox" name="category">
-                                                    <span class="lever"></span>
+                                                    <% if (user.category === "FULL_TIME") { %>
+                                                    <input class="with-gap" name="category" type="radio"  value="FULL_TIME" checked/>
+                                                    <% } else { %>
+                                                    <input class="with-gap" name="category" type="radio"  value="FULL_TIME"/>
+                                                    <% } %>
+                                                    <span>Full Time</span>
                                                 </label>
-                                                Student
-                                            </div>
-                                            <br>
+                                                <label>
+                                                    <% if (user.category === "PART_TIME") { %>
+                                                    <input class="with-gap" name="category" type="radio"  value="PART_TIME" checked/>
+                                                    <% } else { %>
+                                                    <input class="with-gap" name="category" type="radio"  value="PART_TIME"/>
+                                                    <% } %>
+                                                    <span>Part Time</span>
+                                                </label>
+                                                <label>
+                                                    <% if (user.category === "INTERN") { %>
+                                                    <input class="with-gap" name="category" type="radio"  value="INTERN" checked/>
+                                                    <% } else { %>
+                                                    <input class="with-gap" name="category" type="radio"  value="INTERN"/>
+                                                    <% } %>
+                                                    <span>Intern</span>
+                                                </label>
+                                            </p>
+                                            <br><br>
                                             <div class="switch">
                                                 User
                                                 <label>
