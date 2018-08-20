@@ -19,5 +19,8 @@ module.exports = {
         if (req.session.name === undefined) {
             res.redirect('/login?e=101&returnTo='+ encodeURIComponent(req.originalUrl)); // Not logged in
         }
+    },
+    getBaseUrl: function () {
+        return "http://localhost:3000/"
     }
 };

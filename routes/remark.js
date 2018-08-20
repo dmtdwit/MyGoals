@@ -56,7 +56,7 @@ router.post('/create', function(req, res, next){
                                subject: 'New remark on goal | MyGoals',
                                text: 'Hello '+ user.name + ',\n\n' +
                                remarkBy.name + ' made a remark "' + req.body.remark + '" on "' + goal.goal + '". \n\n' +
-                               'Have a look at http://localhost:3000/goal/show/' + req.body.goalId + '\n\n' +
+                               'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + req.body.goalId + '\n\n' +
                                'My Goals Team'
                            };
                            transporter.sendMail(mailOptions, function(error, info){
@@ -78,7 +78,7 @@ router.post('/create', function(req, res, next){
                                    subject: 'New remark on goal | MyGoals',
                                    text: 'Hello '+ manager.name + ',\n\n' +
                                    remarkBy.name + ' made a remark "' + req.body.remark + '" on "' + goal.goal + '". \n\n' +
-                                   'Have a look at http://localhost:3000/goal/show/' + req.body.goalId + '\n\n' +
+                                   'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + req.body.goalId + '\n\n' +
                                    'My Goals Team'
                                };
                                transporter.sendMail(mailOptions, function(error, info){

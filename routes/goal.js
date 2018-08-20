@@ -110,7 +110,7 @@ router.post('/save', function(req, res, next) {
                                         subject: user.name + ' created a new goal | MyGoals',
                                         text: 'Hello '+ manager.name + ',\n\n' +
                                             user.name + ' has created a new goal "' + req.body.goal + '". \n\n' +
-                                            'Have a look at http://localhost:3000/goal/show/' + result.id + '\n\n' +
+                                            'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + result.id + '\n\n' +
                                             'My Goals Team'
                                     };
                                     transporter.sendMail(mailOptions, function(error, info){
@@ -210,7 +210,7 @@ router.post('/log', function(req, res, next){
                         text: 'Hello '+ manager.name + ',\n\n' +
                         user.name + ' has updated his progress log with remark "' + req.body.progressRemark + '" (' +
                         req.body.progressMade + '%). \n\n' +
-                        'Have a look at http://localhost:3000/goal/log/show/' + goal.id + '\n\n' +
+                        'Have a look at ' + sh.getBaseUrl() + 'goal/log/show/' + goal.id + '\n\n' +
                         'MyGoals Team'
                     };
                     transporter.sendMail(mailOptions, function(error, info){
@@ -293,7 +293,7 @@ router.post('/award', function(req, res, next) {
                         subject: 'You have been given an award | MyGoals',
                         text: 'Hello '+ user.name + ',\n\n' +
                         'You have been given an award for your goal "' + goal.goal + '". \n\n' +
-                        'Have a look at http://localhost:3000/goal/show/' + goal.id + '\n\n' +
+                        'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + goal.id + '\n\n' +
                         'My Goals Team'
                     };
                     transporter.sendMail(mailOptions, function(error, info){
@@ -438,7 +438,7 @@ router.get('/action', function(req, res, next) {
                             subject: 'Your goal has been ' + action + ' | MyGoals',
                             text: 'Hello '+ user.name + ',\n\n' +
                             'Your goal "' + goal.goal + '" has been ' + action + '. \n\n' +
-                            'Have a look at http://localhost:3000/goal/show/' + goal.id + '\n\n' +
+                            'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + goal.id + '\n\n' +
                             'My Goals Team'
                         };
                         transporter.sendMail(mailOptions, function(error, info){
