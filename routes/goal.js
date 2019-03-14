@@ -62,9 +62,11 @@ router.post('/save', function(req, res, next) {
             }
         }).then(function(goalCountPers){
             if (goalType === "PERSONAL" && goalCountPers >= 1) {
-                res.redirect("/goal/list?e=102"); // Personal goal count is 1
+                    res.redirect("/goal/list?e=102"); // Personal goal count is 1
+
             } else if (goalType === "ORGANIZATIONAL" && goalCountOrg >= 2) {
-                res.redirect("/goal/list?e=103"); // Organizational goal count is 2
+                    res.redirect("/goal/list?e=103"); // Organizational goal count is 2
+
             } else {
                 models.User.findOne({
                     where: {
@@ -107,11 +109,11 @@ router.post('/save', function(req, res, next) {
                                     let mailOptions = {
                                         from: 'rnd@deerwalk.edu.np',
                                         to: manager.email,
-                                        subject: user.name + ' created a new goal | MyGoals',
+                                        subject: user.name + ' created a new goal | Deerwalk Goals',
                                         text: 'Hello '+ manager.name + ',\n\n' +
                                             user.name + ' has created a new goal "' + req.body.goal + '". \n\n' +
                                             'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + result.id + '\n\n' +
-                                            'My Goals Team'
+                                            'Deerwalk Goals Team'
                                     };
                                     transporter.sendMail(mailOptions, function(error, info){
                                         if (error) {
@@ -122,10 +124,9 @@ router.post('/save', function(req, res, next) {
                                     });
                                 });
                             });
-                        });
+                        }).then(res.redirect('/goal/list?e=101'));
                     }
                 });
-                res.redirect('/goal/list?e=101');
             }
         })
     });
@@ -165,7 +166,7 @@ router.get('/show/:id', function(req, res, next) {
                 // }
 
                     res.render('goal/show', {
-                        title: 'Goal | My Goals',
+                        title: 'Goal | Deerwalk Goals',
                         goal: goal,
                         user: user,
                         sess: sh.getSession(req)
@@ -188,7 +189,7 @@ router.post('/log', function(req, res, next){
         progressMade: req.body.progressMade
     }).then(function (result) {
         return result.setGoal(req.body.progressGoalId);
-    }).then(function(result){
+    }).then(function(log){
 
         models.User.findOne({
             where: {
@@ -201,17 +202,17 @@ router.post('/log', function(req, res, next){
                 }
             }).then(function(manager){
                 models.Goal.findOne({
-                    where: { id: log.GoalId}
+                    where: { id: req.body.progressGoalId}
                 }).then(function(goal){
                     let mailOptions = {
                         from: 'rnd@deerwalk.edu.np',
                         to: manager.email,
-                        subject: user.name + ' updated his progress | MyGoals',
+                        subject: user.name + ' has updated progress | Deerwalk Goals',
                         text: 'Hello '+ manager.name + ',\n\n' +
-                        user.name + ' has updated his progress log with remark "' + req.body.progressRemark + '" (' +
+                        user.name + ' has updated progress log with remark "' + req.body.progressRemark + '" (' +
                         req.body.progressMade + '%). \n\n' +
                         'Have a look at ' + sh.getBaseUrl() + 'goal/log/show/' + goal.id + '\n\n' +
-                        'MyGoals Team'
+                        'Deerwalk Goals Team'
                     };
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
@@ -260,7 +261,7 @@ router.get('/log/show/:id', function(req, res, next) {
                         }
                     }).then(function (logs) {
                         res.render('goal/log', {
-                            title: 'Goal Log',
+                            title: 'Goal Log | Deerwalk Goals',
                             goal: goal,
                             logs: logs,
                             sess: sess,
@@ -290,11 +291,11 @@ router.post('/award', function(req, res, next) {
                     let mailOptions = {
                         from: 'rnd@deerwalk.edu.np',
                         to: user.email,
-                        subject: 'You have been given an award | MyGoals',
+                        subject: 'You have been given an award | Deerwalk Goals',
                         text: 'Hello '+ user.name + ',\n\n' +
                         'You have been given an award for your goal "' + goal.goal + '". \n\n' +
                         'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + goal.id + '\n\n' +
-                        'My Goals Team'
+                        'Deerwalk Goals Team'
                     };
                     transporter.sendMail(mailOptions, function(error, info){
                         if (error) {
@@ -391,11 +392,12 @@ router.get('/updateProgress', function(req, res, next){
         id: id
     }}).then(function(goal) {
         if(goal){
-            if(progress === 100) {
+            if(progress == 100) {
                 goal.updateAttributes({
                     progress: progress,
                     goalStatus: "COMPLETED"
                 });
+                console.log("Completed");
             } else {
                 goal.updateAttributes({
                     progress: progress
@@ -435,11 +437,11 @@ router.get('/action', function(req, res, next) {
                         let mailOptions = {
                             from: 'rnd@deerwalk.edu.np',
                             to: user.email,
-                            subject: 'Your goal has been ' + action + ' | MyGoals',
+                            subject: 'Your goal has been ' + action + ' | Deerwalk Goals',
                             text: 'Hello '+ user.name + ',\n\n' +
                             'Your goal "' + goal.goal + '" has been ' + action + '. \n\n' +
                             'Have a look at ' + sh.getBaseUrl() + 'goal/show/' + goal.id + '\n\n' +
-                            'My Goals Team'
+                            'Deerwalk Goals Team'
                         };
                         transporter.sendMail(mailOptions, function(error, info){
                             if (error) {
@@ -516,7 +518,7 @@ router.get('/allSubordinates', function(req, res, next) {
             }
         }).then(function (subordinates) {
             res.render('goal/all-subordinate-goals',{
-                title: "Subordinates' Goals",
+                title: "Subordinates' Goals | Deerwalk Goals",
                 subordinates: subordinates,
                 sess: sess
             })
@@ -539,7 +541,7 @@ router.get('/print', function(req, res, next) {
             }
         }).then(function (subordinates) {
             res.render('goal/print',{
-                title: "Subordinates' Goals",
+                title: "Subordinates' Goals | Deerwalk Goals",
                 subordinates: subordinates,
                 sess: sess
             })

@@ -59,7 +59,7 @@ router.get('/list', function (req, res, next) {
 
     models.Award.findAll({}).then(function (awards) {
         res.render('award/list',{
-            title: 'Award List | MyGoals',
+            title: 'Award List | Deerwalk Goals',
             awards: awards,
             sess: sess,
             message: message,
@@ -95,7 +95,7 @@ router.get('/create', function (req, res, next) {
         res.redirect('/login?e=102');
     }
     res.render('award/create',{
-       title: 'Create Award | MyGoals',
+       title: 'Create Award | Deerwalk Goals',
         sess: sess
    });
 });
@@ -141,7 +141,7 @@ router.get('/edit', function (req, res, next) {
         }
     }).then(function (award) {
         res.render('award/edit.ejs', {
-            title: 'Edit Award | My Goals',
+            title: 'Edit Award | Deerwalk Goals',
             award: award,
             sess: sess
         });

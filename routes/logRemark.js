@@ -58,11 +58,11 @@ router.post('/create', function(req, res, next){
                             let mailOptions = {
                                 from: 'rnd@deerwalk.edu.np',
                                 to: user.email,
-                                subject: 'New remark on log | MyGoals',
+                                subject: 'New remark on log | Deerwalk Goals',
                                 text: 'Hello '+ user.name + ',\n\n' +
                                 remarkBy.name + ' made a log remark "' + req.body.remark + '" on "' + log.remark + '". \n\n' +
                                 'Have a look at ' + sh.getBaseUrl() + 'goal/log/show/' + req.body.goalId + '\n\n' +
-                                'My Goals Team'
+                                'Deerwalk Goals Team'
                             };
                             transporter.sendMail(mailOptions, function(error, info){
                                 if (error) {
@@ -80,11 +80,11 @@ router.post('/create', function(req, res, next){
                                 let mailOptions = {
                                     from: 'rnd@deerwalk.edu.np',
                                     to: manager.email,
-                                    subject: 'New remark on log | MyGoals',
+                                    subject: 'New remark on log | Deerwalk Goals',
                                     text: 'Hello '+ manager.name + ',\n\n' +
                                     remarkBy.name + ' made a log remark "' + req.body.remark + '" on "' + log.remark + '". \n\n' +
                                     'Have a look at ' + sh.getBaseUrl() + 'goal/log/show/' + req.body.goalId + '\n\n' +
-                                    'My Goals Team'
+                                    'Deerwalk Goals Team'
                                 };
                                 transporter.sendMail(mailOptions, function(error, info){
                                     if (error) {

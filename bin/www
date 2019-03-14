@@ -49,8 +49,8 @@ models.sequelize.sync().then(function() {
                 });
                 models.User.create({
                     name: "superadmin",
-                    password: "superadmin123",
-                    email: "rnd",
+                    password: "ac497cfaba23c4184cb03b97e8c51e0a",
+                    email: "rnd@deerwalk.edu.np",
                     category: "EMPLOYEE"
                 }).then(function(result){
                     return result.setRole(1);

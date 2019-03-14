@@ -23,7 +23,10 @@ router.get('/create', function(req, res, next) {
     if (sess.role === "USER") {
         res.redirect('/?e=102'); // Not authorized
     } else {
-        models.User.findAll({}).then(function (users) {
+        models.User.findAll({
+
+        }).then(function (users) {
+            console.log(users);
             res.render('user/create', {
                 title: 'Create New User',
                 users: users,
@@ -133,7 +136,7 @@ router.get('/edit/:id', function(req, res, next) {
                         managerId = manager.id
                     }
                     res.render('user/edit', {
-                        title: 'Edit User | My Goals',
+                        title: 'Edit User | Deerwalk Goals',
                         firstName: user.name.split(" ")[0],
                         lastName: user.name.split(" ")[1],
                         user: user,
@@ -231,8 +234,8 @@ router.post('/save', function(req, res, next) {
                let mailOptions = {
                    from: 'rnd@deerwalk.edu.np',
                    to: result3.email,
-                   subject: 'Credentials | MyGoals',
-                   text: 'Hello '+req.body.firstName+',\n\nYour account for MyGoals application has been created. \n\n\tUsername: ' + result3.email.split('@')[0] + '\n\tPassword: '+ md5(req.body.email) +'\n\nPlease use this credentials to sign in.\n\nThanks,\nMyGoals Team'
+                   subject: 'Credentials | Deerwalk Goals',
+                   text: 'Hello '+req.body.firstName+',\n\nYour account for Deerwalk Goals application has been created. \n\n\tUsername: ' + result3.email.split('@')[0] + '\n\tPassword: '+ md5(req.body.email) +'\n\nPlease use this credentials to sign in.\n\nThanks,\n Deerwalk Goals Team'
                };
                transporter.sendMail(mailOptions, function(error, info){
                    if (error) {
@@ -365,7 +368,7 @@ router.get('/list', function(req, res, next) {
 
     models.User.findAll({
         where: {
-            RoleId: 2
+            RoleId: 3
         }
     }).then(function(users) {
         res.render('user/list', {
@@ -436,7 +439,7 @@ router.get('/subordinates', function(req, res, next){
             }
         }).then(function (subordinates) {
             res.render('user/subordinates',{
-                title: 'Subordinates',
+                title: 'Subordinates | Deerwalk Goals',
                 subordinates: subordinates,
                 sess: sess
             })
@@ -471,7 +474,7 @@ router.get('/dashboard', function(req, res, next) {
 router.get('/profilePicture', function (req, res, next) {
     res.render('user/profilePicture',
         {
-            title: 'Edit Profile Picture | MyGoals',
+            title: 'Edit Profile Picture | Deerwalk Goals',
             sess: sh.getSession(req)
         }
     );

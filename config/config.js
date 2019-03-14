@@ -2,7 +2,7 @@ module.exports = {
     development: {
         username: 'root',
         password: null,
-        database: 'mygoals',
+        database: 'deerwalk_goals',
         host: 'localhost',
         dialect: "mysql",
         operatorsAliases: false
@@ -10,15 +10,15 @@ module.exports = {
     test: {
         username: 'root',
         password: null,
-        database: 'mygoals',
+        database: 'deerwalk_goals',
         host: 'localhost',
         dialect: "mysql",
         operatorsAliases: false
     },
     production: {
-        username: 'mygoal',
-        password: 'mygoal',
-        database: 'mygoals',
+        username: 'deerwalk_goals',
+        password: 'deerwalk_goals',
+        database: 'deerwalk_goals',
         host: 'localhost',
         dialect: 'mysql',
         operatorsAliases: false

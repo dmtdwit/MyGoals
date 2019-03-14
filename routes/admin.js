@@ -14,7 +14,7 @@ router.get('/dashboard', function(req, res, next) {
        } else {
             models.User.count({
                 where: {
-                    RoleId: 2
+                    RoleId: 3
                 }
             }).then(function(userCount){
                 models.Goal.count({
@@ -28,7 +28,7 @@ router.get('/dashboard', function(req, res, next) {
                         }
                     }).then(function(awardCount) {
                         res.render('admin/dashboard', {
-                            title: 'Dashboard',
+                            title: 'Dashboard | Deerwalk Goals',
                             sess: sess,
                             users: userCount,
                             goals: goalCount,
